@@ -31,3 +31,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+.vs/TowerNotFall/v15/Server/sqlite3/db.lock
+.vs/TowerNotFall/v15/Server/sqlite3/storage.ide
+.vs/TowerNotFall/v15/Server/sqlite3/storage.ide-shm
+.vs/TowerNotFall/v15/Server/sqlite3/storage.ide-wal
