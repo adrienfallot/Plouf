@@ -12,6 +12,7 @@ public class MapGenerator : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		DetermineSolidity ();
+		InstanciateMap ();
 	}
 
 	void DetermineSolidity(){
