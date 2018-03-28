@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayersControllerManager : MonoBehaviour {
-
+public class PlayersControllerManager : MonoBehaviour
+{
     public Player player1 = null;
     public Player player2 = null;
     public Player player3 = null;
@@ -31,11 +31,8 @@ public class PlayersControllerManager : MonoBehaviour {
     private string m_JumpP4Axis = "Jump_P4";
     private string m_FireP4Axis = "Fire1_P4";
 
-    private Dictionary<Player, List<string>> m_PlayersAxisName = new Dictionary<Player, List<string>>();
-
-    // Use this for initialization
-    void Start () {
-
+    void Start ()
+    {
         PlayerControllerAxis player1HorizontalAxis = new ContinuousPlayerControllerAxis(m_HorizontalP1Axis, player1.MoveHorizontal);
         PlayerControllerAxis player1VerticalAxis = new ContinuousPlayerControllerAxis(m_VerticalP1Axis, player1.MoveRight);
         PlayerControllerAxis player1JumpAxis = new SpontaneousPlayerControllerAxis(m_JumpP1Axis, player1.Jump);
@@ -75,8 +72,8 @@ public class PlayersControllerManager : MonoBehaviour {
         m_ControllersAxis.Add(player4FireAxis);
     }
 	
-	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         foreach(PlayerControllerAxis controllerAxis in m_ControllersAxis)
         {
             controllerAxis.ExecuteInput();

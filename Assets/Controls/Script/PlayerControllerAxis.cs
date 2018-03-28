@@ -6,5 +6,6 @@ using UnityEngine;
 abstract public class PlayerControllerAxis
 {
     protected string name;
+
     abstract public void ExecuteInput();
 }

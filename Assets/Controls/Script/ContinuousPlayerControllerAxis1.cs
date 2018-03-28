@@ -16,7 +16,7 @@ public class ContinuousPlayerControllerAxis : PlayerControllerAxis {
 
     public override void ExecuteInput()
     {
-        value = Input.GetAxis(name);
+        value = Input.GetAxisRaw(name);
         axisAction(value);
     }
 }
