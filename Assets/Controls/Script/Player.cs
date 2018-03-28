@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     public float jumpMultiplier = 10f;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2.5f;
-    public float floattingTimeAfterGrip = .1f;
+    public float floattingTimeAfterGrip = .075f;
 
     public Animator m_Animator = null;
 
