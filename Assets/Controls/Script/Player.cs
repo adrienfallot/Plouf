@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2.5f;
 
+    public Animator m_Animator = null;
+
     private Rigidbody   m_Rigidbody = null;
     private Vector3     m_HorizontalDirection = Vector3.zero;
     private Vector3     m_VerticalDirection = Vector3.zero;
@@ -19,6 +21,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        m_Animator = GetComponent<Animator>();
         m_DistToGround = GetComponent<Collider>().bounds.extents.y;
         m_DistToSide = GetComponent<Collider>().bounds.extents.x;
         m_Rigidbody = GetComponent<Rigidbody>();
@@ -82,8 +85,8 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
-        bool hasRightGrip = Physics.Raycast(transform.position, transform.right, m_DistToSide + .05f);
-        bool hasLeftGrip = Physics.Raycast(transform.position, -transform.right, m_DistToSide + .05f);
+        bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .05f);
+        bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .05f);
 
         return (isGoingRight) ? hasRightGrip : hasLeftGrip;
     }
@@ -101,7 +104,7 @@ public class Player : MonoBehaviour
                 dragVector = Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
             }
             //tweak de la décélération en montée
-            else
+            else if (m_Rigidbody.velocity.y > 0)
             {
                 dragVector = Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
             }
