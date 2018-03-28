@@ -65,6 +65,17 @@ public class MapGenerator : MonoBehaviour
 		return matrix;
 	}
 
+    void ReinitialiseMatrix()
+    {
+        for (int i = 0; i < NUMBER_OF_ROW; i++)
+        {
+            for (int j = 0; j < NUMBER_OF_COLUMN; j++)
+            {
+                cellValues[i][j] = 0;
+            }
+        }
+    }
+
     void DetermineSpawns()
     {
         spawns = new int[NUMBER_OF_PLAYER][];
@@ -116,6 +127,7 @@ public class MapGenerator : MonoBehaviour
 
 	void DetermineSolidity(){
         while (!IsValidMap()){
+            ReinitialiseMatrix();
             GenerateSolidityMap();
         }
 	}
@@ -239,19 +251,21 @@ public class MapGenerator : MonoBehaviour
 
 		for (int i = 1; i < NUMBER_OF_ROW-1; i++) {
 			if(pathableCells.ContainsKey(i)){
+                Debug.Log(i);
 				for (int j = 1; j < NUMBER_OF_COLUMN-1; j++) {
 					cellValues[i] = pathableCells[i];
 				}
 			}
 		}
-		/*underPathableCells = GetUnderPathableCells(groundLevels);	
+
+        underPathableCells = GetUnderPathableCells(groundLevels);	
 		for (int i = 1; i < NUMBER_OF_ROW-1; i++) {
 			if(underPathableCells.ContainsKey(i)){
 				for (int j = 1; j < NUMBER_OF_COLUMN-1; j++) {
 					cellValues[i] = underPathableCells[i];
 				}
 			}
-		}*/
+		}
 	}
 
 	Dictionary<int, int[]> GetUnderPathableCells (int[] groundLevels){
@@ -316,8 +330,11 @@ public class MapGenerator : MonoBehaviour
 		int[] ground = new int[NUMBER_OF_COLUMN];
 		int[] startingPositions = new int[BASE_NUMBER_OF_PLATE_PER_GROUND];
 		float plateLength = 0;
-
-		for (int i = 0; i < BASE_NUMBER_OF_PLATE_PER_GROUND; i++) {
+        for (int i = 0; i < NUMBER_OF_COLUMN; i++)
+        {
+            ground[i] = 0;
+        }
+        for (int i = 0; i < BASE_NUMBER_OF_PLATE_PER_GROUND; i++) {
 			startingPositions[i] = Random.Range (0, 13);
 		}
 
@@ -359,20 +376,23 @@ public class MapGenerator : MonoBehaviour
 
 	int[] GetGroundLevels(){
 		int[] groundLevels = new int[maxGroundLevels];
-
+        Debug.Log("TEST");
 		for (int i = 0; i < maxGroundLevels; i++) {
 			groundLevels[i] = -1;
 		}
 		int currentGroundLevel = 0;
 		for (int i = 0; i < maxGroundLevels; i++) {
 			currentGroundLevel += Random.Range (minLevelGap+1, maxLevelGap+2);
-			if (currentGroundLevel > NUMBER_OF_ROW){
+            if (currentGroundLevel >= NUMBER_OF_ROW){
+                Debug.Log("STOP");
 				return groundLevels;
-			}
-			groundLevels[i] = currentGroundLevel;
+            }
+            Debug.Log("BWOP");
+            groundLevels[i] = currentGroundLevel;
 		}
 
-		return groundLevels;
+        Debug.Log("STOPP");
+        return groundLevels;
 	}
 
 	void DetermineSolidityOfWalls(){
