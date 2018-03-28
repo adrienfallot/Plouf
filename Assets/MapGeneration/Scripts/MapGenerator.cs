@@ -18,6 +18,7 @@ public class MapGenerator : MonoBehaviour
 	public int maxGroundLevels = 5;
     public int MIN_SOLID_BLOCK_PER_MAP_INTERIOR = 12;
     const int NUMBER_OF_PLAYER = 4;
+    public GameObject[] Players = new GameObject[4];
     int[][] cellValues = null;
     int[][] spawns = null;
 
@@ -27,6 +28,7 @@ public class MapGenerator : MonoBehaviour
 		DetermineSolidity ();
         DetermineSpawns();
 		InstanciateMap ();
+        PlacePlayer();
 	}
 
 	int[][] InitialiseMatrix(int length, int width){
@@ -47,6 +49,18 @@ public class MapGenerator : MonoBehaviour
         spawns = new int[NUMBER_OF_PLAYER][];
         DetermineUpSpawn();
         DetermineDownSpawn();
+    }
+
+    void PlacePlayer()
+    {
+        Vector3 spawnPos = Vector3.zero;
+        for (int i = 0; i < Players.Length; i++)
+        {
+
+            spawnPos.x = spawns[i][1];
+            spawnPos.y = -spawns[i][0];
+            Players[i].transform.position = spawnPos;
+        }
     }
 
     void DetermineUpSpawn(){
@@ -375,8 +389,12 @@ public class MapGenerator : MonoBehaviour
                 }
                 else if (cellValues[i][j] == 2)
                 {
-                    GameObject.Instantiate(debugTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
-                    GameObject.Instantiate(debugTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    if(debugTile)
+                    {
+                        GameObject.Instantiate(debugTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
+                        GameObject.Instantiate(debugTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    }
+                    
                 }
                 else
                 {
@@ -385,8 +403,13 @@ public class MapGenerator : MonoBehaviour
                 }
 			}
 		}
-        foreach(int[] coordinate in spawns){
-            GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
+        if(debugTile)
+        {
+            foreach (int[] coordinate in spawns)
+            {
+                GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
+            }
         }
+        
 	}
 }
