@@ -7,21 +7,25 @@ public class MapGenerator : MonoBehaviour
     public GameObject debugTile = null;
     public GameObject blackTile = null;
 	public GameObject whiteTile = null;
-	const int NUMBER_OF_ROW = 24;
-	const int NUMBER_OF_COLUMN = 13;
-	const int BASE_NUMBER_OF_PLATE_PER_GROUND = 2;
-	const int MAX_LENGTH_OF_PLATE = 5;
-	const int MIN_LENGTH_OF_PLATE = 1;
-	const int MAX_NUMBER_OF_UP_DOWN_HOLE = 1;
-    const int minLevelGap = 2;
-	const int maxLevelGap = 7;
-	const int maxGroundLevels = 5;
-	int[][] cellValues = null;
+	public int NUMBER_OF_ROW = 24;
+	public int NUMBER_OF_COLUMN = 13;
+	public int BASE_NUMBER_OF_PLATE_PER_GROUND = 2;
+	public int MAX_LENGTH_OF_PLATE = 5;
+	public int MIN_LENGTH_OF_PLATE = 1;
+	public int MAX_NUMBER_OF_UP_DOWN_HOLE = 1;
+    public int minLevelGap = 2;
+	public int maxLevelGap = 7;
+	public int maxGroundLevels = 5;
+    public int MIN_SOLID_BLOCK_PER_MAP_INTERIOR = 12;
+    const int NUMBER_OF_PLAYER = 4;
+    int[][] cellValues = null;
+    int[][] spawns = null;
 
 	// Use this for initialization
 	void Start () {
 		cellValues = InitialiseMatrix (NUMBER_OF_ROW, NUMBER_OF_COLUMN);
 		DetermineSolidity ();
+        DetermineSpawns();
 		InstanciateMap ();
 	}
 
@@ -38,12 +42,88 @@ public class MapGenerator : MonoBehaviour
 		return matrix;
 	}
 
+    void DetermineSpawns()
+    {
+        spawns = new int[NUMBER_OF_PLAYER][];
+        DetermineUpSpawn();
+        DetermineDownSpawn();
+    }
+
+    void DetermineUpSpawn(){
+        for (int i = 1; i < NUMBER_OF_ROW - 1; i++)
+        {
+            for (int j = 1; j < NUMBER_OF_COLUMN - 1; j++)
+            {
+                if (cellValues[i][j] == 1){
+                    if (cellValues[i-1][0] != 0 && cellValues[i-1][j] == 0){
+                        spawns[0] = new int[] {i-1, j};
+                        spawns[2] = new int[] {i-1, NUMBER_OF_COLUMN*2 - j - 1};
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    void DetermineDownSpawn(){
+        for (int i = NUMBER_OF_ROW - 1; i > 1; i--){
+            for (int j = 1; j < NUMBER_OF_COLUMN - 1; j++){
+                if (cellValues[i][j] == 1){
+                    if (cellValues[i-1][0] != 0 && cellValues[i - 1][j] == 0){
+                        spawns[1] = new int[] {i-1, NUMBER_OF_COLUMN*2 - j - 1 };
+                        spawns[3] = new int[] {i-1, j};
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
 	void DetermineSolidity(){
-		/*The order of function call is important in this function.*/
-		DetermineSolidityOfInterior ();
-		DetermineSolidityOfFloorAndCeiling ();
-		DetermineSolidityOfWalls ();
+        while (!IsValidMap()){
+            GenerateSolidityMap();
+        }
 	}
+
+    bool IsValidMap(){
+        return (
+            IsEnoughtBlocksInMap() &&
+            IsNoBlockingLayer()
+            );
+    }
+
+    bool IsEnoughtBlocksInMap(){
+        int numberOfSolidBlock = 0;
+        for(int i = 1; i < NUMBER_OF_ROW-1; i++){
+            for(int j = 1; j < NUMBER_OF_COLUMN-1; j++){
+                if(cellValues[i][j] == 1){
+                    numberOfSolidBlock++;
+                }
+            }
+        }
+        if (numberOfSolidBlock > MIN_SOLID_BLOCK_PER_MAP_INTERIOR){
+            return true;
+        }
+        return false;
+    }
+
+    bool IsNoBlockingLayer(){
+        for(int i = 1; i < NUMBER_OF_ROW-1; i++) {
+            if(System.Array.IndexOf(cellValues, 0) != -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void GenerateSolidityMap()
+    {
+        /*The order of function call is important in this function.*/
+        DetermineSolidityOfInterior();
+        DetermineSolidityOfFloorAndCeiling();
+        DetermineSolidityOfWalls();
+
+    }
 
 	void DetermineSolidityOfFloorAndCeiling(){
 		int[] holeCandidate = getUpDownHoleCandidate();
@@ -250,6 +330,8 @@ public class MapGenerator : MonoBehaviour
         }
         locationSelected = holeCandidates[Random.Range(0, holeCandidates.Length)];
 
+        Debug.Log(locationSelected);
+        Debug.Log(holeCandidates.Length);
         cellValues[locationSelected-1][0] = 0;
         cellValues[locationSelected][0] = 0;
     }
@@ -274,13 +356,13 @@ public class MapGenerator : MonoBehaviour
         k = 0;
         for (int i = 3; i < NUMBER_OF_ROW; i++)
         {
-            if (cellValues[i][1] == 0 && cellValues[i][1] == 0)
+            if (cellValues[i][1] == 0 && cellValues[i-1][1] == 0)
             {
                 secondHandCandidates[k] = i;
                 k++;
             }
         }
-        return getSliceOfArray(priorityCandidates, 0, k);
+        return getSliceOfArray(secondHandCandidates, 0, k);
     }
 
 	void InstanciateMap(){
@@ -298,15 +380,13 @@ public class MapGenerator : MonoBehaviour
                 }
                 else
                 {
-                    GameObject.Instantiate(whiteTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
-                    GameObject.Instantiate(whiteTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    //GameObject.Instantiate(whiteTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    //GameObject.Instantiate(whiteTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
                 }
 			}
 		}
-	}
-
-	// Update is called once per frame
-	void Update () {
-		
+        foreach(int[] coordinate in spawns){
+            GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
+        }
 	}
 }

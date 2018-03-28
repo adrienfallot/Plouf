@@ -172,6 +172,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -233,6 +249,22 @@ Prefab:
     - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
@@ -296,6 +328,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -358,6 +406,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -412,6 +476,22 @@ Prefab:
       value: 
       objectReference: {fileID: 1509477495420546, guid: 7209e8e3c6aa90a43a5f4ce2c0ee9f71,
         type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -474,6 +554,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -535,6 +631,22 @@ Prefab:
     - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
@@ -663,6 +775,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -724,6 +852,22 @@ Prefab:
     - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
@@ -787,6 +931,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -844,6 +1004,26 @@ Prefab:
     - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
       propertyPath: m_Name
       value: Map (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
@@ -907,6 +1087,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -969,6 +1165,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -1030,6 +1242,22 @@ Prefab:
     - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
@@ -1174,6 +1402,22 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -1235,6 +1479,22 @@ Prefab:
     - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: debugTile
+      value: 
+      objectReference: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35,
+        type: 2}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: minLevelGap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: maxLevelGap
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
