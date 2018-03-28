@@ -17,7 +17,7 @@ public class MapGenerator : MonoBehaviour
 	public int maxLevelGap = 7;
 	public int maxGroundLevels = 5;
     public int MIN_SOLID_BLOCK_PER_MAP_INTERIOR = 12;
-    const int NUMBER_OF_PLAYER = 4;
+    public const int NUMBER_OF_PLAYER = 4;
     public GameObject[] Players = new GameObject[4];
     int[][] cellValues = null;
     int[][] spawns = null;
@@ -50,6 +50,11 @@ public class MapGenerator : MonoBehaviour
         DetermineUpSpawn();
         DetermineDownSpawn();
     }
+
+	public int[][] GetSpawns()
+	{
+		return spawns;
+	}
 
     void PlacePlayer()
     {

@@ -9,17 +9,20 @@ public class SpontaneousPlayerControllerAxis : PlayerControllerAxis {
 
     private bool m_AxisInUse = false;
 
-    public SpontaneousPlayerControllerAxis(string iName, Action iAxisAction)
+    public SpontaneousPlayerControllerAxis(Player iPlayer, string iName, Action iAxisAction)
     {
+        player = iPlayer;
         name = iName;
         axisAction = iAxisAction;
     }
 
     public override void ExecuteInput()
     {
-        if(Input.GetButtonDown(name))
-        {
-            axisAction();
+        if(player.enabled){
+            if(Input.GetButtonDown(name))
+            {
+                axisAction();
+            }
         }
     }
 }
