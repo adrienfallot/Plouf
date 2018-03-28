@@ -21,9 +21,10 @@ public class MapGenerator : MonoBehaviour
     public GameObject[] Players = new GameObject[4];
     int[][] cellValues = null;
     int[][] spawns = null;
+    public bool testDebug = false;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		cellValues = InitialiseMatrix (NUMBER_OF_ROW, NUMBER_OF_COLUMN);
 		DetermineSolidity ();
         DetermineSpawns();
@@ -31,7 +32,27 @@ public class MapGenerator : MonoBehaviour
         PlacePlayer();
 	}
 
-	int[][] InitialiseMatrix(int length, int width){
+    void Update(){
+        if (testDebug)
+        {
+            RegenerateMap();
+            testDebug = false;
+        }
+    }
+
+    void RegenerateMap(){
+        
+        foreach (Transform child in this.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        cellValues = InitialiseMatrix(NUMBER_OF_ROW, NUMBER_OF_COLUMN);
+        DetermineSolidity();
+        DetermineSpawns();
+        InstanciateMap();
+    }
+
+    int[][] InitialiseMatrix(int length, int width){
 		int[][] matrix = new int[length][];
 		for (int i = 0; i < length; i++) {
 			int[] row = new int[width];
@@ -102,7 +123,8 @@ public class MapGenerator : MonoBehaviour
     bool IsValidMap(){
         return (
             IsEnoughtBlocksInMap() &&
-            IsNoBlockingLayer()
+            IsNoBlockingLayer() &&
+            IsNotCollidingWithPlayer()
             );
     }
 
@@ -123,8 +145,30 @@ public class MapGenerator : MonoBehaviour
 
     bool IsNoBlockingLayer(){
         for(int i = 1; i < NUMBER_OF_ROW-1; i++) {
-            if(System.Array.IndexOf(cellValues, 0) != -1) {
+            if(System.Array.IndexOf(cellValues[i], 0) == -1) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    bool IsNotCollidingWithPlayer()
+    {
+        foreach (GameObject player in Players) {
+            if (player.transform.position.x > 1 && player.transform.position.x < NUMBER_OF_COLUMN - 1
+               && player.transform.position.y < -1 && player.transform.position.y > -NUMBER_OF_ROW + 1) {
+                if (cellValues[-(int)player.transform.position.y][(int)player.transform.position.x] == 1){
+                    return false;
+                }
+                if (cellValues[(-(int)player.transform.position.y) - 1][(int)player.transform.position.x] == 1){
+                    return false;
+                }
+                if (cellValues[-(int)player.transform.position.y][(int)player.transform.position.x + 1] == 1){
+                    return false;
+                }
+                if (cellValues[(-(int)player.transform.position.y) - 1][(int)player.transform.position.x + 1] == 1){
+                    return false;
+                }
             }
         }
         return true;
@@ -200,14 +244,14 @@ public class MapGenerator : MonoBehaviour
 				}
 			}
 		}
-		underPathableCells = GetUnderPathableCells(groundLevels);	
+		/*underPathableCells = GetUnderPathableCells(groundLevels);	
 		for (int i = 1; i < NUMBER_OF_ROW-1; i++) {
 			if(underPathableCells.ContainsKey(i)){
 				for (int j = 1; j < NUMBER_OF_COLUMN-1; j++) {
 					cellValues[i] = underPathableCells[i];
 				}
 			}
-		}
+		}*/
 	}
 
 	Dictionary<int, int[]> GetUnderPathableCells (int[] groundLevels){
@@ -343,9 +387,7 @@ public class MapGenerator : MonoBehaviour
             return;
         }
         locationSelected = holeCandidates[Random.Range(0, holeCandidates.Length)];
-
-        Debug.Log(locationSelected);
-        Debug.Log(holeCandidates.Length);
+        
         cellValues[locationSelected-1][0] = 0;
         cellValues[locationSelected][0] = 0;
     }
@@ -396,10 +438,10 @@ public class MapGenerator : MonoBehaviour
                     }
                     
                 }
-                else
+                else if (cellValues[i][j] == 0 && whiteTile)
                 {
-                    //GameObject.Instantiate(whiteTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
-                    //GameObject.Instantiate(whiteTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    GameObject.Instantiate(whiteTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    GameObject.Instantiate(whiteTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
                 }
 			}
 		}
