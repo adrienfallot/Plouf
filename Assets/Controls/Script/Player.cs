@@ -8,7 +8,8 @@ public class Player : MonoBehaviour
     public float jumpMultiplier = 10f;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2.5f;
-    public float floattingTimeAfterGrip = .075f;
+    public float floattingTimeAfterGrip = .1f;
+    public float dashCooldown = 1f;
 
     public Animator m_Animator = null;
 
@@ -23,6 +24,7 @@ public class Player : MonoBehaviour
     private bool        m_IsDashing = false;
     private bool        m_KeepInAir = false;
     private int         m_AvailableJumps = 1;
+    private int         m_availableDashs = 1;
 
     private void Start()
     {
@@ -77,9 +79,10 @@ public class Player : MonoBehaviour
     {
         //m_VerticalDirection = iInputValue * transform.right * Time.deltaTime;
         //transform.Translate(m_VerticalDirection * speed);
-        if (!m_IsDashing && iInputValue != 0)
+        if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0)
         {
             StartCoroutine(DashCoroutine());
+            StartCoroutine(DashCooldownCoroutine());
         }
     }
 
@@ -94,9 +97,16 @@ public class Player : MonoBehaviour
         {
             if (m_AvailableJumps > 0)
             {
+                
                 Vector3 direction = m_VerticalDirection + m_HorizontalDirection + Vector3.up;
                 m_Rigidbody.velocity = (direction * jumpMultiplier);
-                SpendJump();
+
+                //si on a la place de sauter, on le dépense ce saut de merde.
+                if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
+                {
+                    SpendJump();
+                }
+
             }
         }
     }
@@ -116,16 +126,34 @@ public class Player : MonoBehaviour
         m_AvailableJumps = (int)Mathf.Clamp01(m_AvailableJumps + 1);
     }
 
+    private void SpendDash()
+    {
+        m_availableDashs = (int)Mathf.Clamp01(m_availableDashs - 1);
+    }
+
+    private void GiveDash()
+    {
+        m_availableDashs = (int)Mathf.Clamp01(m_availableDashs + 1);
+    }
+
     private IEnumerator DashCoroutine()
     {
         m_IsDashing = true;
         m_Rigidbody.isKinematic = true;
         GiveJump();
+        SpendDash();
 
-        yield return MoveToPosition(transform.position + transform.right, .1f);
+        yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 1.5f, .05f));
+        yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 3.5f, .1f));
 
         m_IsDashing = false;
         m_Rigidbody.isKinematic = false;
+    }
+
+    private IEnumerator DashCooldownCoroutine()
+    {
+        yield return new WaitForSeconds(dashCooldown);
+        GiveDash();
     }
 
     private IEnumerator MoveToPosition(Vector3 iNewPos, float iTime)
@@ -147,15 +175,15 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, -transform.up, m_DistToGround + .05f);
+        return Physics.Raycast(transform.position, -transform.up, m_DistToGround + .01f);
     }
 
     private bool HasGripOnWall(Vector3 iDirection)
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
-        bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .05f);
-        bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .05f);
+        bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
+        bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
 
         return (isGoingRight) ? hasRightGrip : hasLeftGrip;
     }
@@ -223,7 +251,7 @@ public class Player : MonoBehaviour
         {
             m_ShouldBeDragged = false;
             //beurk
-            m_AvailableJumps = 1;
+            //m_AvailableJumps = 1;
         }
     }
 
