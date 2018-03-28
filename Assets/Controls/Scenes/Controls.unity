@@ -146,6 +146,7 @@ MonoBehaviour:
   jumpMultiplier: 10
   fallMultiplier: 5.68
   lowJumpMultiplier: 3.31
+  floattingTimeAfterGrip: 0.075
   m_Animator: {fileID: 0}
 --- !u!54 &4326798
 Rigidbody:
@@ -304,6 +305,7 @@ MonoBehaviour:
   jumpMultiplier: 10
   fallMultiplier: 5.68
   lowJumpMultiplier: 3.31
+  floattingTimeAfterGrip: 0.075
   m_Animator: {fileID: 0}
 --- !u!54 &57245877
 Rigidbody:
@@ -638,6 +640,11 @@ Prefab:
     - target: {fileID: 4402993063699374, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
       propertyPath: m_RootOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114993064997728428, guid: 046ad263d40ef0944b8d2279a36f26d9,
+        type: 2}
+      propertyPath: floattingTimeAfterGrip
+      value: 0.075
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
@@ -995,6 +1002,7 @@ MonoBehaviour:
   jumpMultiplier: 10
   fallMultiplier: 5.68
   lowJumpMultiplier: 3.31
+  floattingTimeAfterGrip: 0.075
   m_Animator: {fileID: 0}
 --- !u!54 &1607946531
 Rigidbody:

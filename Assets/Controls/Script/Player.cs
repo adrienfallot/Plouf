@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public float jumpMultiplier = 10f;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2.5f;
+    public float floattingTimeAfterGrip = .1f;
 
     public Animator m_Animator = null;
 
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
     private bool        m_IsGrippingWall = false;
     private bool        m_IsDraggedDown = false;
     private bool        m_IsDashing = false;
+    private bool        m_KeepInAir = false;
     private int         m_AvailableJumps = 1;
 
     private void Start()
@@ -32,10 +34,23 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(m_Rigidbody.velocity.y != 0 && !m_IsDraggedDown)
-        {
-            StartCoroutine(DragDownCoroutine());
+        if (!m_KeepInAir)
+        { 
+            if (m_Rigidbody.velocity.y != 0 && !m_IsDraggedDown)
+            {
+                StartCoroutine(DragDownCoroutine());
+            }
         }
+        else
+        {
+            if(m_Rigidbody.velocity.y < 0)
+            {
+                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+            }
+            
+        }
+
+        
     }
 
     public void MoveHorizontal(float iInputValue)
@@ -77,7 +92,6 @@ public class Player : MonoBehaviour
     {
         if (!m_IsDashing)
         {
-            //if (IsGrounded() || m_IsGrippingWall)
             if (m_AvailableJumps > 0)
             {
                 Vector3 direction = m_VerticalDirection + m_HorizontalDirection + Vector3.up;
@@ -185,8 +199,10 @@ public class Player : MonoBehaviour
 
         m_Rigidbody.isKinematic = false;
         m_ShouldBeDragged = false;
+        m_KeepInAir = true;
         //Pour laisser un peu de temps au joueur de sauter après avoir lâché un mur.
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(floattingTimeAfterGrip);
+        m_KeepInAir = false;
         m_ShouldBeDragged = true;
         m_IsGrippingWall = false;
         yield return StartCoroutine(DragDownCoroutine());
@@ -206,6 +222,8 @@ public class Player : MonoBehaviour
         if (collision.collider.CompareTag("SolidEnvironment"))
         {
             m_ShouldBeDragged = false;
+            //beurk
+            m_AvailableJumps = 1;
         }
     }
 
