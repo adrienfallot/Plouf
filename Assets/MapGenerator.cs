@@ -13,7 +13,7 @@ public class MapGenerator : MonoBehaviour
 	const int MAX_LENGTH_OF_PLATE = 5;
 	const int MIN_LENGTH_OF_PLATE = 1;
 	const int MAX_NUMBER_OF_UP_DOWN_HOLE = 1;
-	const int minLevelGap = 2;
+    const int minLevelGap = 2;
 	const int maxLevelGap = 7;
 	const int maxGroundLevels = 5;
 	int[][] cellValues = null;
@@ -48,7 +48,13 @@ public class MapGenerator : MonoBehaviour
 	void DetermineSolidityOfFloorAndCeiling(){
 		int[] holeCandidate = getUpDownHoleCandidate();
 		int[] upDownHoleLocationSelected = new int[MAX_NUMBER_OF_UP_DOWN_HOLE];
-        if(holeCandidate.Length == 0){
+
+        for (int j = 0; j < NUMBER_OF_COLUMN; j++)
+        {   cellValues[0][j] = 1;
+            cellValues[NUMBER_OF_ROW - 1][j] = 1;
+        }
+
+        if (holeCandidate.Length == 0){
             return;
         }
 		for(int i = 0; i < upDownHoleLocationSelected.Length; i++){
@@ -63,10 +69,6 @@ public class MapGenerator : MonoBehaviour
 			else if (System.Array.IndexOf(upDownHoleLocationSelected, j-1) != -1) {
 				cellValues[0][j] = 0;
 				cellValues[NUMBER_OF_ROW-1][j] = 0;
-			}
-			else {
-				cellValues[0][j] = 1;
-				cellValues[NUMBER_OF_ROW-1][j] = 1;
 			}
 		}
 	}
@@ -236,10 +238,50 @@ public class MapGenerator : MonoBehaviour
 	}
 
 	void DetermineSolidityOfWalls(){
-		for (int i = 1; i < NUMBER_OF_ROW-1; i++) {
+        int[] holeCandidates = DetermineWallHoleCandidates();
+        int locationSelected = 0;
+
+        for (int i = 1; i < NUMBER_OF_ROW-1; i++) {
 			cellValues[i][0] = 1;
 		}
-	}
+        if (holeCandidates.Length == 0)
+        {
+            return;
+        }
+        locationSelected = holeCandidates[Random.Range(0, holeCandidates.Length)];
+
+        cellValues[locationSelected-1][0] = 0;
+        cellValues[locationSelected][0] = 0;
+    }
+
+    int[] DetermineWallHoleCandidates(){
+        int[] priorityCandidates = new int[NUMBER_OF_ROW];
+        int[] secondHandCandidates = new int[NUMBER_OF_ROW];
+        bool priorityCandidatesFound = false;
+        int k = 0;
+
+        for (int i = 3; i < NUMBER_OF_ROW; i++){
+            if (cellValues[i][1] == 1 && cellValues[i-1][1] == 0 && cellValues[i-2][1] == 0){
+                priorityCandidates[k] = i - 1;
+                priorityCandidatesFound = true;
+                k++;
+            }
+        }
+        if (priorityCandidatesFound){
+            return getSliceOfArray(priorityCandidates, 0, k);
+        }
+
+        k = 0;
+        for (int i = 3; i < NUMBER_OF_ROW; i++)
+        {
+            if (cellValues[i][1] == 0 && cellValues[i][1] == 0)
+            {
+                secondHandCandidates[k] = i;
+                k++;
+            }
+        }
+        return getSliceOfArray(priorityCandidates, 0, k);
+    }
 
 	void InstanciateMap(){
 		for (int i = 0; i < NUMBER_OF_ROW; i++) {
