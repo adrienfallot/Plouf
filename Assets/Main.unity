@@ -152,10 +152,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 1022393148959988, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
-      propertyPath: m_Name
-      value: Mesh
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
   m_IsPrefabParent: 0
@@ -462,10 +458,6 @@ Prefab:
     - target: {fileID: 1502069299774090, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
       propertyPath: m_Name
       value: Player 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1022393148959988, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
-      propertyPath: m_Name
-      value: Mesh
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}

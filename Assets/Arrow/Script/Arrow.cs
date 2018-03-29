@@ -14,18 +14,31 @@ public class Arrow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (rb != null) {
-			if (rb.velocity != Vector3.zero) {
-				Vector3 vel = rb.velocity;
-				float angleZ = Mathf.Atan2(vel.y,vel.x)*Mathf.Rad2Deg;
-
-				transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,angleZ);
-			}
+			if (rb.velocity != Vector3.zero)
+            {
+                transform.eulerAngles = GetRotationFromVelocity(rb.velocity);
+            }
 		}
 	}
+
+    public static Vector3 GetRotationFromVelocity(Vector3 velocity)
+    {
+        float angleZ = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+
+        return new Vector3(0, 0, angleZ);
+    }
 
 	void OnCollisionEnter(Collision collision){
 		if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arena"))){
 			rb.isKinematic = true;
 		}
 	}
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
+        {
+            rb.isKinematic = true;
+        }
+    }
 }
