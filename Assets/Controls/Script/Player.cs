@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     private int         m_availableDashs = 1;
     private bool        m_FacingRight = true;
     private bool        m_IsInAir = false;
+    private bool        m_IsCloseEnoughToWall = false;
     private bool        m_CanDashAgain = false;
     private float       m_Dot = 0;
     private List<Transform> m_currentColliders = new List<Transform>();
@@ -54,7 +55,13 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        m_IsCloseEnoughToWall = HasGripOnWall((m_FacingRight) ? transform.right : - transform.right);
         m_IsInAir = IsInAir();
+
+        bool isFalling = (m_Rigidbody.velocity.y < 0 ? m_IsInAir : false);
+
+        m_Animator.SetBool("Falling", isFalling);
+        m_Animator.SetBool("GrabingWall", m_IsGrippingWall || m_IsCloseEnoughToWall);
 
         if(m_IsInAir)
         {
@@ -97,9 +104,12 @@ public class Player : MonoBehaviour
             {
                 //m_Rigidbody.velocity += m_HorizontalDirection * speed;
                 transform.Translate(m_HorizontalDirection * speed);
+
+                m_Animator.SetBool("Walking", (m_HorizontalDirection * speed) != Vector3.zero);
             }
             else if (!m_IsGrippingWall)
             {
+                m_Animator.SetBool("Walking", false);
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
             }
 
@@ -177,6 +187,7 @@ public class Player : MonoBehaviour
                 //si on a la place de sauter, on le dépense ce saut de merde.
                 if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
                 {
+                    m_Animator.SetTrigger("Jump");
                     SpendJump();
                 }
 
@@ -230,10 +241,13 @@ public class Player : MonoBehaviour
 
     private IEnumerator DashCoroutine(float iInputValue)
     {
+        m_Animator.SetBool("Dashing", true);
+        
         m_IsDashing = true;
         m_Rigidbody.useGravity = false;
         GiveJump();
         SpendDash();
+
 
         Vector3 startVelocity = m_Rigidbody.velocity;
         Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection * 1.5f).normalized;
@@ -252,6 +266,8 @@ public class Player : MonoBehaviour
 
         m_IsDashing = false;
         m_Rigidbody.useGravity = true;
+
+        m_Animator.SetBool("Dashing", false);
     }
 
     private IEnumerator DashCooldownCoroutine()
@@ -299,7 +315,6 @@ public class Player : MonoBehaviour
     private bool HasGripOnWall(Vector3 iDirection)
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
-
 
         bool hasRightGrip = false;
         bool hasLeftGrip = false;
