@@ -20,10 +20,10 @@ public class GameManager : MonoBehaviour {
 		}
 	}
     
-    /*void Start()
+    void Start()
     {
         InvokeRepeating("regenerateMap",0,5);
-    }*/
+    }
 
 	public Vector3 GetUnusedSpawn() {
 		
