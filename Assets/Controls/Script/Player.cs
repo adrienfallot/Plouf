@@ -253,19 +253,18 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
-        Debug.Log(isGoingRight);
 
         bool hasRightGrip = false;
         bool hasLeftGrip = false;
         if (isGoingRight)
         {
-            hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
+            hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
 
             //return hasRightGrip;
         }
         else
         {
-            hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
+            hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
 
             //return hasLeftGrip;
         }
@@ -361,17 +360,17 @@ public class Player : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.collider.CompareTag("SolidEnvironment"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
         {
-            //m_ShouldBeDragged = false;
+            m_ShouldBeDragged = false;
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.collider.CompareTag("SolidEnvironment"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
         {
-            //m_ShouldBeDragged = true;
+            m_ShouldBeDragged = true;
         }
     }
 
