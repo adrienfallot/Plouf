@@ -79,8 +79,8 @@ public class Player : MonoBehaviour
             m_HorizontalDirection = iInputValue * Vector3.right * Time.deltaTime;
             if (!HasGripOnWall(m_HorizontalDirection))
             {
-                m_Rigidbody.velocity += m_HorizontalDirection * speed;
-                //transform.Translate(m_HorizontalDirection * speed);
+                //m_Rigidbody.velocity += m_HorizontalDirection * speed;
+                transform.Translate(m_HorizontalDirection * speed);
             }
 
             if (iInputValue > 0 && !m_FacingRight)
@@ -241,13 +241,13 @@ public class Player : MonoBehaviour
 
         if(isGoingRight)
         {
-            bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
+            bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
 
             return hasRightGrip;
         }
         else
         {
-            bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
+            bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
 
             return hasLeftGrip;
         }
