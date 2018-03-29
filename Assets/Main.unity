@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b5ee7b5bdda20046b0534da9b6c9edc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugTile: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35, type: 2}
+  debugTile: {fileID: 0}
   blackTile: {fileID: 1805877402695446, guid: bb201d2e3752a224a908b8d2ed773adb, type: 2}
   whiteTile: {fileID: 0}
   NUMBER_OF_ROW: 24
