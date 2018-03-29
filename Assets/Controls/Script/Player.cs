@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     public int numberOfArrowAtBeginning = 4;
     public float respawnTimer = 1f;
 
+    public float bumpFromDeathFromAbove = 5f;
+
     public Animator m_Animator = null;
 
     private Rigidbody   m_Rigidbody = null;
@@ -395,27 +397,11 @@ public class Player : MonoBehaviour
                 {
                     Death();
                 }
-                
             }
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
         {
-            Debug.Log(Vector3.Dot(collision.gameObject.GetComponent<Rigidbody>().velocity.normalized, transform.up));
-            if (Vector3.Dot(collision.gameObject.GetComponent<Rigidbody>().velocity.normalized, transform.up) > 0.5f)
-            {
-                Death();
-            }
-        }
-    }
-
-    private void CheckIfIsGrabbingWall()
-    {
-        if (m_Dot > .75f || m_Dot < -.75f)
-        {
-            if (!m_IsGrippingWall)
-            {
-                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
-            }
+            DeathFromAbove(collision.gameObject);
         }
     }
 
@@ -425,6 +411,25 @@ public class Player : MonoBehaviour
         {
             m_ShouldBeDragged = false;
         }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
+        {
+            DeathFromAbove(collision.gameObject);
+        }
+    }
+
+    private void DeathFromAbove(GameObject iFromPlayer)
+    {
+        Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
+        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.5f)
+        {
+            Death();
+        }
+        iFromPlayer.GetComponent<Player>().DeathFromAboveBump();
+    }
+
+    public void DeathFromAboveBump()
+    {
+        m_Rigidbody.velocity += Vector3.up * bumpFromDeathFromAbove;
     }
 
     private void OnCollisionExit(Collision collision)

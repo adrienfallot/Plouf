@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour {
     
     void Start()
     {
-        InvokeRepeating("regenerateMap",0,5);
+        //InvokeRepeating("regenerateMap",0,5);
     }
 
 	public Vector3 GetUnusedSpawn() {
