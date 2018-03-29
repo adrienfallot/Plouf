@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     private int         m_AvailableJumps = 1;
     private int         m_availableDashs = 1;
     private bool        m_FacingRight = true;
+    private bool        m_IsInAir = false;
     private float       m_Dot = 0;
     private List<Transform> m_currentColliders = new List<Transform>();
 
@@ -45,9 +46,17 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        m_IsInAir = IsInAir();
+
+        //clamp vitesse
+            if (m_Rigidbody.velocity.y < -50)
+        {
+            m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, -50, m_Rigidbody.velocity.z);
+        }
+        
         if (!m_KeepInAir)
         { 
-            if (m_Rigidbody.velocity.y != 0 && !m_IsDraggedDown)
+            if (m_IsInAir && !m_IsDraggedDown)
             {
                 StartCoroutine(DragDownCoroutine());
             }
@@ -58,46 +67,34 @@ public class Player : MonoBehaviour
             {
                 m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
             }
-            
         }
         
     }
 
     public void MoveHorizontal(float iInputValue)
     {
-        if(!m_IsDashing)
+        if (!m_IsDashing)
         {
             //on ne se déplace que si on n'est pas collé à un mur.
             m_HorizontalDirection = iInputValue * Vector3.right * Time.deltaTime;
             if (!HasGripOnWall(m_HorizontalDirection))
             {
-                transform.Translate(m_HorizontalDirection * speed);
+                m_Rigidbody.velocity += m_HorizontalDirection * speed;
+                //transform.Translate(m_HorizontalDirection * speed);
             }
-            else if(!m_IsGrippingWall)
+
+            if (iInputValue > 0 && !m_FacingRight)
             {
-                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
+                print("droite");
+                Flip();
             }
-        }
-        if(iInputValue > 0 && !m_FacingRight){
-            print("droite");
-            Flip();
-        }
-        else if(iInputValue < 0 && m_FacingRight){
-            print("gauche");
-            Flip();
+            else if (iInputValue < 0 && m_FacingRight)
+            {
+                print("gauche");
+                Flip();
+            }
         }
             
-    }
-
-    public void MoveRight(float iInputValue)
-    {
-        //m_VerticalDirection = iInputValue * transform.right * Time.deltaTime;
-        //transform.Translate(m_VerticalDirection * speed);
-        if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0)
-        {
-            StartCoroutine(DashCoroutine());
-            StartCoroutine(DashCooldownCoroutine());
-        }
     }
 
     public void Fire()
@@ -124,8 +121,13 @@ public class Player : MonoBehaviour
             {
                 
                 Vector3 direction = m_VerticalDirection + m_HorizontalDirection + Vector3.up;
-                m_Rigidbody.velocity = (direction * jumpMultiplier);
-
+                //m_Rigidbody.velocity = (direction * jumpMultiplier);
+                if(m_IsInAir)
+                {
+                    m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+                }
+                m_Rigidbody.AddForce(direction * jumpMultiplier);
+                
                 //si on a la place de sauter, on le dépense ce saut de merde.
                 if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
                 {
@@ -136,9 +138,23 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Dash()
+    public void Dash(float iInputValue)
     {
-        
+        if (iInputValue != 0)
+        {
+            //if (!HasGripOnWall(m_Rigidbody.velocity))
+            {
+                if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0)
+                {
+                    StartCoroutine(DashCoroutine());
+                    StartCoroutine(DashCooldownCoroutine());
+                }
+            }
+            /*else if (!m_IsGrippingWall)
+            {
+                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_Rigidbody.velocity)));
+            }*/
+        }
     }
 
     private void SpendJump()
@@ -164,24 +180,16 @@ public class Player : MonoBehaviour
     private IEnumerator DashCoroutine()
     {
         m_IsDashing = true;
-        //m_Rigidbody.isKinematic = true;
         m_Rigidbody.useGravity = false;
         GiveJump();
         SpendDash();
+
         Vector3 startVelocity = m_Rigidbody.velocity;
         Vector3 direction = (m_FacingRight) ? Vector3.right : -Vector3.right;
-        //yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 1.5f, .05f));
-        //yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 3.5f, .1f));
         yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 50f, startVelocity + direction * 30f, .05f));
         yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 30f, startVelocity + direction * 0f, .1f));
-        //yield return StartCoroutine(LerpVelocityTo(transform.position + transform.right * 3.5f, .1f));
-
-        //m_Rigidbody.AddForce(transform.forward * 10);
-        //yield return new WaitForSeconds(.5f);
-
 
         m_IsDashing = false;
-        //m_Rigidbody.isKinematic = false;
         m_Rigidbody.useGravity = true;
     }
 
@@ -251,7 +259,7 @@ public class Player : MonoBehaviour
         m_IsDraggedDown = true;
         Vector3 dragVector = Vector3.zero;
 
-        while (m_ShouldBeDragged)
+        while (m_IsInAir)
         {
             if(!m_Rigidbody.useGravity)
             {
@@ -270,17 +278,11 @@ public class Player : MonoBehaviour
                 dragVector = Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
             }
 
-            if(m_Rigidbody.velocity.y >= 50)
-            {
-                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 50, m_Rigidbody.velocity.z);
-            }
-            else
-            {
-                m_Rigidbody.velocity += dragVector;
-            }
+            m_Rigidbody.velocity += dragVector;
         }
 
         m_IsDraggedDown = false;
+        GiveJump();
     }
 
     private IEnumerator GrippingWallCoroutine(Vector3 iGrippingDirection)
@@ -311,8 +313,8 @@ public class Player : MonoBehaviour
     {
         if(collision.collider.CompareTag("SolidEnvironment"))
         {
-            m_ShouldBeDragged = false;
-            GiveJump();
+            //m_ShouldBeDragged = false;
+            //GiveJump();
             
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
@@ -341,7 +343,7 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.CompareTag("SolidEnvironment"))
         {
-            m_ShouldBeDragged = false;
+            //m_ShouldBeDragged = false;
         }
     }
 
@@ -349,7 +351,7 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.CompareTag("SolidEnvironment"))
         {
-            m_ShouldBeDragged = true;
+            //m_ShouldBeDragged = true;
         }
     }
 
