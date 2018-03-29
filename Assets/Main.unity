@@ -519,6 +519,11 @@ Prefab:
       propertyPath: Players.Array.data[3]
       value: 
       objectReference: {fileID: 240014387}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: NUMBER_OF_COLUMN
+      value: 13
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
