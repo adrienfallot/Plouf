@@ -155,9 +155,58 @@ public class MapGenerator : MonoBehaviour
             IsPathBetweenPlayers()
             );
     }
+    
+    bool IsPathBetweenPlayers()
+    {
+        //return true;
+        int[] playerOne = new int[2] { -(int)Players[0].transform.position.y, (int)Players[0].transform.position.x };
+        int[] playerTwo = new int[2] { -(int)Players[1].transform.position.y, (int)Players[1].transform.position.x };
+        int[] playerThree = new int[2] { -(int)Players[2].transform.position.y, (int)Players[2].transform.position.x };
+        int[] playerFour = new int[2] { -(int)Players[3].transform.position.y, (int)Players[3].transform.position.x };
+        if(playerOne[1] >= NUMBER_OF_COLUMN)
+        {
+            playerOne[1] -= NUMBER_OF_COLUMN;
+        }
+        if (playerTwo[1] >= NUMBER_OF_COLUMN)
+        {
+            playerTwo[1] -= NUMBER_OF_COLUMN;
+        }
+        if (playerThree[1] >= NUMBER_OF_COLUMN)
+        {
+            playerThree[1] -= NUMBER_OF_COLUMN;
+        }
+        if (playerFour[1] >= NUMBER_OF_COLUMN)
+        {
+            playerFour[1] -= NUMBER_OF_COLUMN;
+        }
+        playerOne = smoothPlayerPos(playerOne);
+        playerTwo = smoothPlayerPos(playerTwo);
+        playerThree = smoothPlayerPos(playerThree);
+        playerFour = smoothPlayerPos(playerFour);
+        return (IsPathBetweenTwoPoints(playerOne, playerTwo) &&
+                IsPathBetweenTwoPoints(playerTwo, playerThree) &&
+                IsPathBetweenTwoPoints(playerThree, playerFour));
+    }
 
-    bool IsPathBetweenPlayers(){
-        return true;
+    int[] smoothPlayerPos(int[] player)
+    {
+        if(player[0] <= 0)
+        {
+            player[0]++;
+        }
+        else if (player[0] >= NUMBER_OF_ROW-1)
+        {
+            player[0]--;
+        }
+        if (player[1] <= 0)
+        {
+            player[1]++;
+        }
+        else if (player[1] >= NUMBER_OF_COLUMN)
+        {
+            player[1]--;
+        }
+        return player;
     }
 
     bool IsPathToHole()
@@ -168,12 +217,10 @@ public class MapGenerator : MonoBehaviour
             {
                 if (IsPathBetweenTwoPoints(new int[2] { 1, 1 }, new int[2] { NUMBER_OF_ROW - 1, i }))
                 {
-                    Debug.Log("RETURN TRUE");
                     return true;
                 }
             }
         }
-        Debug.Log("RETURN FALSe");
         return false;
     }
 
@@ -229,16 +276,19 @@ public class MapGenerator : MonoBehaviour
                     openedList.Add(closeNode);
                 }
             }
-            if (cellValues[currentNode.x][currentNode.y+1] != 1)
+            if (currentNode.y < NUMBER_OF_COLUMN - 1)
             {
-                closeNode.x = currentNode.x;
-                closeNode.y = currentNode.y + 1;
-                closeNode.cost = currentNode.cost + 1;
-                closeNode.heuristique = closeNode.cost + Vector2.Distance(new Vector2(closeNode.x, closeNode.y), new Vector2(endNode.x, endNode.y));
-                if (!NodeInListAndCheaper(closedList, closeNode) && !NodeInListAndCheaper(openedList, closeNode))
+                if (cellValues[currentNode.x][currentNode.y + 1] != 1)
                 {
-                    //Debug.Log("Add to openedList" + closeNode.x + " " + closeNode.y);
-                    openedList.Add(closeNode);
+                    closeNode.x = currentNode.x;
+                    closeNode.y = currentNode.y + 1;
+                    closeNode.cost = currentNode.cost + 1;
+                    closeNode.heuristique = closeNode.cost + Vector2.Distance(new Vector2(closeNode.x, closeNode.y), new Vector2(endNode.x, endNode.y));
+                    if (!NodeInListAndCheaper(closedList, closeNode) && !NodeInListAndCheaper(openedList, closeNode))
+                    {
+                        //Debug.Log("Add to openedList" + closeNode.x + " " + closeNode.y);
+                        openedList.Add(closeNode);
+                    }
                 }
             }
             if (cellValues[currentNode.x-1][currentNode.y] != 1)
@@ -290,7 +340,7 @@ public class MapGenerator : MonoBehaviour
         {
             return true;
         }
-        if (toFind.y >= NUMBER_OF_COLUMN-1 || toFind.y <= 0)
+        if (toFind.y >= NUMBER_OF_COLUMN || toFind.y <= 0)
         {
             return true;
         }
