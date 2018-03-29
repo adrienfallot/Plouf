@@ -35,8 +35,11 @@ public class MapGenerator : MonoBehaviour
     // Use this for initialization
     void Start () {
 		cellValues = InitialiseMatrix (NUMBER_OF_ROW, NUMBER_OF_COLUMN);
-		DetermineSolidity ();
-        DetermineSpawns();
+        do
+        {
+            DetermineSolidity();
+            DetermineSpawns();
+        } while (!IsValidMap(true));
 		InstanciateMap ();
         PlacePlayer();
 	}
@@ -56,8 +59,12 @@ public class MapGenerator : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         cellValues = InitialiseMatrix(NUMBER_OF_ROW, NUMBER_OF_COLUMN);
-        DetermineSolidity();
-        DetermineSpawns();
+        do
+        {
+            DetermineSolidity();
+            DetermineSpawns();
+
+        } while (!IsValidMap(false));
         InstanciateMap();
     }
 
@@ -135,35 +142,42 @@ public class MapGenerator : MonoBehaviour
     }
 
 	void DetermineSolidity(){
-        do
-        {
-            ReinitialiseMatrix();
-            GenerateSolidityMap();
-        } while (!IsValidMap());
-
+        ReinitialiseMatrix();
+        GenerateSolidityMap();
     }
 
-    bool IsValidMap()
+    bool IsValidMap(bool firstMap)
     {
-        //IsPathBetweenTwoPoints(new int[2] { 1, 1 }, new int[2] { NUMBER_OF_ROW - 2, 1 });
-        //IsPathToHole();
         return (
             IsEnoughtBlocksInMap() &&
             IsNoBlockingLayer() &&
             IsNotCollidingWithPlayer() &&
             IsPathToHole() &&
-            IsPathBetweenPlayers()
+            IsPathBetweenPlayers(firstMap)
             );
     }
     
-    bool IsPathBetweenPlayers()
+    bool IsPathBetweenPlayers(bool firstMap)
     {
-        //return true;
-        int[] playerOne = new int[2] { -(int)Players[0].transform.position.y, (int)Players[0].transform.position.x };
-        int[] playerTwo = new int[2] { -(int)Players[1].transform.position.y, (int)Players[1].transform.position.x };
-        int[] playerThree = new int[2] { -(int)Players[2].transform.position.y, (int)Players[2].transform.position.x };
-        int[] playerFour = new int[2] { -(int)Players[3].transform.position.y, (int)Players[3].transform.position.x };
-        if(playerOne[1] >= NUMBER_OF_COLUMN)
+        int[] playerOne;
+        int[] playerTwo;
+        int[] playerThree;
+        int[] playerFour;
+        if (firstMap)
+        {
+            playerOne = new int[2] { spawns[0][0], spawns[0][1] };
+            playerTwo = new int[2] { spawns[1][0], spawns[1][1] };
+            playerThree = new int[2] { spawns[2][0], spawns[2][1] };
+            playerFour = new int[2] { spawns[3][0], spawns[3][1] };
+        }
+        else
+        {
+            playerOne = new int[2] { -(int)Players[0].transform.position.y, (int)Players[0].transform.position.x };
+            playerTwo = new int[2] { -(int)Players[1].transform.position.y, (int)Players[1].transform.position.x };
+            playerThree = new int[2] { -(int)Players[2].transform.position.y, (int)Players[2].transform.position.x };
+            playerFour = new int[2] { -(int)Players[3].transform.position.y, (int)Players[3].transform.position.x };
+        }
+        if (playerOne[1] >= NUMBER_OF_COLUMN)
         {
             playerOne[1] -= NUMBER_OF_COLUMN;
         }
@@ -179,16 +193,16 @@ public class MapGenerator : MonoBehaviour
         {
             playerFour[1] -= NUMBER_OF_COLUMN;
         }
-        playerOne = smoothPlayerPos(playerOne);
-        playerTwo = smoothPlayerPos(playerTwo);
-        playerThree = smoothPlayerPos(playerThree);
-        playerFour = smoothPlayerPos(playerFour);
+        playerOne = SmoothPlayerPos(playerOne);
+        playerTwo = SmoothPlayerPos(playerTwo);
+        playerThree = SmoothPlayerPos(playerThree);
+        playerFour = SmoothPlayerPos(playerFour);
         return (IsPathBetweenTwoPoints(playerOne, playerTwo) &&
                 IsPathBetweenTwoPoints(playerTwo, playerThree) &&
                 IsPathBetweenTwoPoints(playerThree, playerFour));
     }
 
-    int[] smoothPlayerPos(int[] player)
+    int[] SmoothPlayerPos(int[] player)
     {
         if(player[0] <= 0)
         {
@@ -258,9 +272,10 @@ public class MapGenerator : MonoBehaviour
             //DebugPrintList(openedList);
             openedList.RemoveAt(lastNodePosition);
             //Debug.Log("Remove currentNode from list " + lastNodePosition + " SIZEOF(openedList)" + openedList.Count);
+            //Debug.Log("End" + endNode.x + " " + endNode.y);
             if (currentNode.x == endNode.x && currentNode.y == endNode.y)
             {
-                //Debug.Log("Found");
+                Debug.Log("Found");
                 return true;
             }
             //Debug.Log("Coordonnées currentNode" + currentNode.x + " " + currentNode.y);
@@ -317,10 +332,12 @@ public class MapGenerator : MonoBehaviour
                     }
                 }
             }
+            cellValues[currentNode.x][currentNode.y] = 2;
             //Debug.Log("SIZEOF(openedList)");
             //Debug.Log(openedList.Count);
             closedList.Add(currentNode);
         }
+        Debug.Log("NOT FOUND");
         return false;
     }
 
@@ -794,7 +811,7 @@ public class MapGenerator : MonoBehaviour
         {
             foreach (int[] coordinate in spawns)
             {
-                //GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
+                GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
             }
         }
         
