@@ -108,7 +108,6 @@ public class MapGenerator : MonoBehaviour
         Vector3 spawnPos = Vector3.zero;
         for (int i = 0; i < Players.Length; i++)
         {
-
             spawnPos.x = spawns[i][1];
             spawnPos.y = -spawns[i][0];
             Players[i].transform.position = spawnPos;
@@ -310,16 +309,11 @@ public class MapGenerator : MonoBehaviour
                     lastNodePosition = i;
                 }
             }
-            //DebugPrintList(openedList);
             openedList.RemoveAt(lastNodePosition);
-            //Debug.Log("Remove currentNode from list " + lastNodePosition + " SIZEOF(openedList)" + openedList.Count);
-            //Debug.Log("End" + endNode.x + " " + endNode.y);
             if (currentNode.x == endNode.x && currentNode.y == endNode.y)
             {
-                Debug.Log("Found");
                 return true;
             }
-            //Debug.Log("Coordonnées currentNode" + currentNode.x + " " + currentNode.y);
             if (cellValues[currentNode.x][currentNode.y-1] != 1)
             {
                 closeNode.x = currentNode.x;
@@ -328,7 +322,6 @@ public class MapGenerator : MonoBehaviour
                 closeNode.heuristique = closeNode.cost + Vector2.Distance(new Vector2(closeNode.x, closeNode.y), new Vector2(endNode.x, endNode.y));
                 if(!NodeInListAndCheaper(closedList, closeNode) && !NodeInListAndCheaper(openedList, closeNode))
                 {
-                    //Debug.Log("Add to openedList" + closeNode.x + " " + closeNode.y + " " + closeNode.cost);
                     openedList.Add(closeNode);
                 }
             }
@@ -342,7 +335,6 @@ public class MapGenerator : MonoBehaviour
                     closeNode.heuristique = closeNode.cost + Vector2.Distance(new Vector2(closeNode.x, closeNode.y), new Vector2(endNode.x, endNode.y));
                     if (!NodeInListAndCheaper(closedList, closeNode) && !NodeInListAndCheaper(openedList, closeNode))
                     {
-                        //Debug.Log("Add to openedList" + closeNode.x + " " + closeNode.y);
                         openedList.Add(closeNode);
                     }
                 }
@@ -355,7 +347,6 @@ public class MapGenerator : MonoBehaviour
                 closeNode.heuristique = closeNode.cost + Vector2.Distance(new Vector2(closeNode.x, closeNode.y), new Vector2(endNode.x, endNode.y));
                 if (!NodeInListAndCheaper(closedList, closeNode) && !NodeInListAndCheaper(openedList, closeNode))
                 {
-                    //Debug.Log("Add to openedList" + closeNode.x + " " + closeNode.y);
                     openedList.Add(closeNode);
                 }
             }
@@ -368,14 +359,10 @@ public class MapGenerator : MonoBehaviour
                     closeNode.heuristique = closeNode.cost + Vector2.Distance(new Vector2(closeNode.x, closeNode.y), new Vector2(endNode.x, endNode.y));
                     if (!NodeInListAndCheaper(closedList, closeNode) && !NodeInListAndCheaper(openedList, closeNode))
                     {
-                        //Debug.Log("Add to openedList" + closeNode.x + " " + closeNode.y);
                         openedList.Add(closeNode);
                     }
                 }
             }
-            //cellValues[currentNode.x][currentNode.y] = 2;
-            //Debug.Log("SIZEOF(openedList)");
-            //Debug.Log(openedList.Count);
             closedList.Add(currentNode);
         }
         return false;
