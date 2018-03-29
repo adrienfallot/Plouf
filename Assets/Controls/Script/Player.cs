@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public float arrowOffset = 2f;
     public float arrowDisplayTime = 0.2f;
     public Rigidbody arrow;
+    public int numberOfArrowAtBeginning = 4;
     public float respawnTimer = 1f;
 
     public Animator m_Animator = null;
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour
     private bool        m_FacingRight = true;
     private float       m_Dot = 0;
     private List<Transform> m_currentColliders = new List<Transform>();
+    private Queue<bool> m_Quiver = new Queue<bool>();
 
     private void Start()
     {
@@ -41,6 +43,9 @@ public class Player : MonoBehaviour
         m_DistToGround = GetComponent<Collider>().bounds.extents.y;
         m_DistToSide = GetComponent<Collider>().bounds.extents.x;
         m_Rigidbody = GetComponent<Rigidbody>();
+        for(int i=0; i < numberOfArrowAtBeginning;i++){
+            m_Quiver.Enqueue(true);
+        }
     }
 
     private void FixedUpdate()
@@ -101,19 +106,22 @@ public class Player : MonoBehaviour
     }
 
     public void Fire()
-    {
+    {   if(m_Quiver.Count > 0){
          if(m_FacingRight)
             {
-                // ... instantiate the rocket facing right and set it's velocity to the right. 
                 Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody;
                 bulletInstance.velocity = new Vector3(arrowSpeed, 0, 0);
             }
             else
             {
-                // Otherwise instantiate the rocket facing left and set it's velocity to the left.
                 Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x-arrowOffset,transform.position.y,transform.position.z), Quaternion.Euler(new Vector3(0,0,180f))) as Rigidbody;
                 bulletInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
             }
+            m_Quiver.Dequeue();
+        }
+        else{
+            print("not enough arrow");
+        }
     }
 
     public void Jump()
@@ -135,6 +143,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 
     public void Dash()
     {
@@ -317,6 +326,8 @@ public class Player : MonoBehaviour
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
             if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
+                m_Quiver.Enqueue(true);
+                Destroy(collision.gameObject);
             }
             else{
                 Death();
