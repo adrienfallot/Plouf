@@ -11,6 +11,11 @@ public class Player : MonoBehaviour
     public float floattingTimeAfterGrip = .1f;
     public float dashCooldown = 1f;
 
+    public float arrowSpeed = 10f;
+    public float arrowOffset = 2f;
+    public float arrowDisplayTime = 0.2f;
+    public Rigidbody arrow;
+
     public Animator m_Animator = null;
 
     private Rigidbody   m_Rigidbody = null;
@@ -25,6 +30,7 @@ public class Player : MonoBehaviour
     private bool        m_KeepInAir = false;
     private int         m_AvailableJumps = 1;
     private int         m_availableDashs = 1;
+    private bool        m_FacingRight = true;
 
     private void Start()
     {
@@ -71,7 +77,14 @@ public class Player : MonoBehaviour
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
             }
         }
-        
+        if(iInputValue > 0 && !m_FacingRight){
+            print("droite");
+            Flip();
+        }
+        else if(iInputValue < 0 && m_FacingRight){
+            print("gauche");
+            Flip();
+        }
             
     }
 
@@ -88,7 +101,18 @@ public class Player : MonoBehaviour
 
     public void Fire()
     {
-        
+         if(m_FacingRight)
+            {
+                // ... instantiate the rocket facing right and set it's velocity to the right. 
+                Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody;
+                bulletInstance.velocity = new Vector3(arrowSpeed, 0, 0);
+            }
+            else
+            {
+                // Otherwise instantiate the rocket facing left and set it's velocity to the left.
+                Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x-arrowOffset,transform.position.y,transform.position.z), Quaternion.Euler(new Vector3(0,0,180f))) as Rigidbody;
+                bulletInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+            }
     }
 
     public void Jump()
@@ -243,6 +267,15 @@ public class Player : MonoBehaviour
             m_ShouldBeDragged = false;
             GiveJump();
         }
+        if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
+            if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
+                print("Pick up!");
+            }
+            else{
+                Death();
+                Destroy(collision.gameObject, arrowDisplayTime);
+            }
+        }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -261,5 +294,17 @@ public class Player : MonoBehaviour
         {
             m_ShouldBeDragged = true;
         }
+    }
+
+     public void Flip()
+    {
+        Vector3 playerScale = transform.localScale;
+        playerScale.x *= -1;
+        transform.localScale = playerScale;
+        m_FacingRight = !m_FacingRight;
+    }
+
+    void Death(){
+        print("mort");
     }
 }
