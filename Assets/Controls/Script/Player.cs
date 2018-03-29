@@ -119,7 +119,6 @@ public class Player : MonoBehaviour
 
     public void Jump()
     {
-        Debug.Log("lol");
         if (!m_IsDashing)
         {
             if (m_AvailableJumps > 0)
@@ -137,11 +136,7 @@ public class Player : MonoBehaviour
                 }
                 m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
                 m_Rigidbody.velocity = (direction * jumpMultiplier);
-                if (m_IsInAir)
-                {
-                }
-                //m_Rigidbody.AddForce(direction * jumpMultiplier);
-                
+                                
                 //si on a la place de sauter, on le dépense ce saut de merde.
                 if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
                 {
@@ -199,7 +194,7 @@ public class Player : MonoBehaviour
         SpendDash();
 
         Vector3 startVelocity = m_Rigidbody.velocity;
-        Vector3 direction = (m_FacingRight) ? Vector3.right : -Vector3.right;
+        Vector3 direction = Vector3.Normalize(m_HorizontalDirection + m_VerticalDirection);
         yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 50f, startVelocity + direction * 30f, .05f));
         yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 30f, startVelocity + direction * 0f, .1f));
 

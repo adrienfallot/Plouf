@@ -12,7 +12,7 @@ public class PlayersControllerManager : MonoBehaviour
     private List<PlayerControllerAxis> m_ControllersAxis = new List<PlayerControllerAxis>();
 
     private string m_HorizontalP1Axis = "Horizontal_P1";
-    private string m_DashP1Axis = "Dash_P1";
+    private string m_DashP1Axis = "Vertical_P1";
     private string m_JumpP1Axis = "Jump_P1";
     private string m_FireP1Axis = "Fire_P1";
 
@@ -34,7 +34,7 @@ public class PlayersControllerManager : MonoBehaviour
     void Start ()
     {
         PlayerControllerAxis player1HorizontalAxis = new ContinuousPlayerControllerAxis(player1, m_HorizontalP1Axis, player1.MoveHorizontal);
-        //PlayerControllerAxis player1DashAxis = new ContinuousPlayerControllerAxis(player1, m_DashP1Axis, player1.Dash);
+        PlayerControllerAxis player1DashAxis = new ContinuousPlayerControllerAxis(player1, m_DashP1Axis, player1.Dash);
         PlayerControllerAxis player1JumpAxis = new SpontaneousPlayerControllerAxis(player1, m_JumpP1Axis, player1.Jump);
         PlayerControllerAxis player1FireAxis = new SpontaneousPlayerControllerAxis(player1, m_FireP1Axis, player1.Fire);
 
@@ -55,7 +55,7 @@ public class PlayersControllerManager : MonoBehaviour
 
 
         m_ControllersAxis.Add(player1HorizontalAxis);
-        //m_ControllersAxis.Add(player1DashAxis);
+        m_ControllersAxis.Add(player1DashAxis);
         m_ControllersAxis.Add(player1JumpAxis);
         m_ControllersAxis.Add(player1FireAxis);
         m_ControllersAxis.Add(player2HorizontalAxis);
