@@ -52,7 +52,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void RegenerateMap(){
+    public void RegenerateMap(){
         
         foreach (Transform child in this.transform)
         {

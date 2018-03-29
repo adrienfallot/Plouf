@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour {
 			Destroy(gameObject);
 		}
 	}
+    
+    void Start()
+    {
+        InvokeRepeating("regenerateMap",0,5);
+    }
 
 	public Vector3 GetUnusedSpawn() {
 		
@@ -33,4 +38,9 @@ public class GameManager : MonoBehaviour {
 		return spawnPos;
 
 	}
+
+    public void regenerateMap()
+    {
+        m_mapGenerator.RegenerateMap();
+    }
 }
