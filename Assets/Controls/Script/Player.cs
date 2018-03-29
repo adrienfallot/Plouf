@@ -94,30 +94,26 @@ public class Player : MonoBehaviour
 
             if (iInputValue > 0 && !m_FacingRight)
             {
-                print("droite");
                 Flip();
             }
             else if (iInputValue < 0 && m_FacingRight)
             {
-                print("gauche");
                 Flip();
             }
         }
             
     }
 
+    public void MoveVertical(float iInputValue)
+    {
+        
+    }
+
     public void Fire()
     {   if(m_Quiver.Count > 0){
-         if(m_FacingRight)
-            {
-                Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody;
-                bulletInstance.velocity = new Vector3(arrowSpeed, 0, 0);
-            }
-            else
-            {
-                Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x-arrowOffset,transform.position.y,transform.position.z), Quaternion.Euler(new Vector3(0,0,180f))) as Rigidbody;
-                bulletInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
-            }
+            Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+            bulletInstance.velocity = arrowSpeed*(m_HorizontalDirection+m_VerticalDirection);
+         
             m_Quiver.Dequeue();
         }
         else{
