@@ -152,10 +152,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 1022393148959988, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
-      propertyPath: m_Name
-      value: Mesh
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
   m_IsPrefabParent: 0
@@ -463,10 +459,6 @@ Prefab:
       propertyPath: m_Name
       value: Player 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1022393148959988, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
-      propertyPath: m_Name
-      value: Mesh
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
   m_IsPrefabParent: 0
@@ -579,6 +571,11 @@ Prefab:
       propertyPath: Players.Array.data[3]
       value: 
       objectReference: {fileID: 240014387}
+    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+        type: 2}
+      propertyPath: NUMBER_OF_COLUMN
+      value: 13
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
