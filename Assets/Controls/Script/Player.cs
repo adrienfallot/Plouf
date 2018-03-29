@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public float arrowOffset = 2f;
     public float arrowDisplayTime = 0.2f;
     public Rigidbody arrow;
+    public float respawnTimer = 1f;
 
     public Animator m_Animator = null;
 
@@ -360,7 +361,30 @@ public class Player : MonoBehaviour
         m_FacingRight = !m_FacingRight;
     }
 
-    void Death(){
-        print("mort");
+    private void Death()
+    {        
+        this.enabled = false;
+        MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.gameObject.SetActive(false);
+        }
+
+        this.transform.position = GameManager.instance.GetUnusedSpawn();
+
+        StartCoroutine(RespawnCoroutine());
+    }
+
+    private IEnumerator RespawnCoroutine()
+    {
+        yield return new WaitForSeconds(respawnTimer);
+        
+        this.enabled = true;
+        
+        MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.gameObject.SetActive(true);
+        }
     }
 }
