@@ -19,7 +19,7 @@ public class Arrow : MonoBehaviour {
                 transform.eulerAngles = GetRotationFromVelocity(rb.velocity);
             }
 		}
-	}
+    }
 
     public static Vector3 GetRotationFromVelocity(Vector3 velocity)
     {

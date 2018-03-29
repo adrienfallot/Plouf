@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     private int         m_availableDashs = 1;
     private bool        m_FacingRight = true;
     private bool        m_IsInAir = false;
+    private bool        m_CanDashAgain = false;
     private float       m_Dot = 0;
     private List<Transform> m_currentColliders = new List<Transform>();
     private Queue<bool> m_Quiver = new Queue<bool>();
@@ -179,16 +180,21 @@ public class Player : MonoBehaviour
         {
             //if (!HasGripOnWall(m_Rigidbody.velocity))
             {
-                if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0)
+                if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0 && m_CanDashAgain)
                 {
                     StartCoroutine(DashCoroutine(iInputValue));
                     StartCoroutine(DashCooldownCoroutine());
                 }
             }
+            m_CanDashAgain = false;
             /*else if (!m_IsGrippingWall)
             {
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_Rigidbody.velocity)));
             }*/
+        }
+        else
+        {
+            m_CanDashAgain = true;
         }
     }
 
@@ -220,7 +226,7 @@ public class Player : MonoBehaviour
         SpendDash();
 
         Vector3 startVelocity = m_Rigidbody.velocity;
-        Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection).normalized;
+        Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection * 1.5f).normalized;
         Debug.Log(direction);
         if(direction == Vector3.zero)
         {
