@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         m_IsInAir = IsInAir();
 
         //clamp vitesse
-            if (m_Rigidbody.velocity.y < -50)
+        if (m_Rigidbody.velocity.y < -50)
         {
             m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, -50, m_Rigidbody.velocity.z);
         }
@@ -81,6 +81,10 @@ public class Player : MonoBehaviour
             {
                 //m_Rigidbody.velocity += m_HorizontalDirection * speed;
                 transform.Translate(m_HorizontalDirection * speed);
+            }
+            else if (!m_IsGrippingWall)
+            {
+                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
             }
 
             if (iInputValue > 0 && !m_FacingRight)
@@ -115,18 +119,28 @@ public class Player : MonoBehaviour
 
     public void Jump()
     {
+        Debug.Log("lol");
         if (!m_IsDashing)
         {
             if (m_AvailableJumps > 0)
             {
-                
-                Vector3 direction = m_VerticalDirection + m_HorizontalDirection + Vector3.up;
-                //m_Rigidbody.velocity = (direction * jumpMultiplier);
-                if(m_IsInAir)
+
+                Vector3 direction;
+
+                if (!HasGripOnWall(m_HorizontalDirection))
                 {
-                    m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+                    direction = m_VerticalDirection + m_HorizontalDirection + Vector3.up;
                 }
-                m_Rigidbody.AddForce(direction * jumpMultiplier);
+                else
+                {
+                    direction = Vector3.up;
+                }
+                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+                m_Rigidbody.velocity = (direction * jumpMultiplier);
+                if (m_IsInAir)
+                {
+                }
+                //m_Rigidbody.AddForce(direction * jumpMultiplier);
                 
                 //si on a la place de sauter, on le dépense ce saut de merde.
                 if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
@@ -239,18 +253,24 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
-        if(isGoingRight)
-        {
-            bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
+        Debug.Log(isGoingRight);
 
-            return hasRightGrip;
+        bool hasRightGrip = false;
+        bool hasLeftGrip = false;
+        if (isGoingRight)
+        {
+            hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
+
+            //return hasRightGrip;
         }
         else
         {
-            bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
+            hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f, LayerMask.NameToLayer("arena"));
 
-            return hasLeftGrip;
+            //return hasLeftGrip;
         }
+
+        return (isGoingRight) ? hasRightGrip : hasLeftGrip;
         
     }
 
