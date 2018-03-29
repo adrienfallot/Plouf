@@ -155,7 +155,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &168877420
+--- !u!1 &182344165
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83,
@@ -163,8 +163,8 @@ GameObject:
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 168877421}
-  - component: {fileID: 675722777}
+  - component: {fileID: 182344167}
+  - component: {fileID: 182344166}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -172,13 +172,45 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &168877421
+--- !u!114 &182344166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 182344165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5ee7b5bdda20046b0534da9b6c9edc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugTile: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35, type: 2}
+  blackTile: {fileID: 1805877402695446, guid: bb201d2e3752a224a908b8d2ed773adb, type: 2}
+  whiteTile: {fileID: 0}
+  NUMBER_OF_ROW: 24
+  NUMBER_OF_COLUMN: 13
+  BASE_NUMBER_OF_PLATE_PER_GROUND: 2
+  MAX_LENGTH_OF_PLATE: 6
+  MIN_LENGTH_OF_PLATE: 1
+  MAX_NUMBER_OF_UP_DOWN_HOLE: 1
+  minLevelGap: 2
+  maxLevelGap: 5
+  maxGroundLevels: 5
+  MIN_SOLID_BLOCK_PER_MAP_INTERIOR: 15
+  solidOverPathable: 0.04
+  Players:
+  - {fileID: 2000006131}
+  - {fileID: 1864691976}
+  - {fileID: 1996492291}
+  - {fileID: 240014387}
+  testDebug: 0
+--- !u!4 &182344167
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 4909791659733018, guid: 479507444426479488d667d5843e0d83,
     type: 2}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 168877420}
+  m_GameObject: {fileID: 182344165}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -278,38 +310,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &675722777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 168877420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b5ee7b5bdda20046b0534da9b6c9edc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugTile: {fileID: 1706743044779812, guid: 5e89911ed1fb6ae42866a400caafbd35, type: 2}
-  blackTile: {fileID: 1805877402695446, guid: bb201d2e3752a224a908b8d2ed773adb, type: 2}
-  whiteTile: {fileID: 0}
-  NUMBER_OF_ROW: 24
-  NUMBER_OF_COLUMN: 13
-  BASE_NUMBER_OF_PLATE_PER_GROUND: 2
-  MAX_LENGTH_OF_PLATE: 6
-  MIN_LENGTH_OF_PLATE: 1
-  MAX_NUMBER_OF_UP_DOWN_HOLE: 1
-  minLevelGap: 2
-  maxLevelGap: 5
-  maxGroundLevels: 5
-  MIN_SOLID_BLOCK_PER_MAP_INTERIOR: 15
-  solidOverPathable: 0.04
-  Players:
-  - {fileID: 2000006131}
-  - {fileID: 1864691976}
-  - {fileID: 1996492291}
-  - {fileID: 240014387}
-  testDebug: 0
 --- !u!1 &677803776
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,4 +692,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a78152c5fc0c953438d6e9081ff785f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_mapGenerator: {fileID: 675722777}
+  m_mapGenerator: {fileID: 182344166}

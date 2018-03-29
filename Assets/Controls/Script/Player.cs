@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     public int numberOfArrowAtBeginning = 4;
     public float respawnTimer = 1f;
 
+    public float bumpFromDeathFromAbove = 5f;
+
     public Animator m_Animator = null;
 
     private Rigidbody   m_Rigidbody = null;
@@ -53,6 +55,14 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         m_IsInAir = IsInAir();
+
+        if(m_IsInAir)
+        {
+            if(!m_IsDraggedDown)
+            {
+                StartCoroutine(DragDownCoroutine());
+            }
+        }
 
         //clamp vitesse
         if (m_Rigidbody.velocity.y < -50)
@@ -233,10 +243,6 @@ public class Player : MonoBehaviour
             direction = (-iInputValue * Vector3.right).normalized;
             CheckPlayerOrientation(iInputValue);
         }
-
-        //yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 50f, startVelocity + direction * 30f, .05f));
-        //yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 30f, startVelocity + direction * 0f, .1f));
-
         
         m_Rigidbody.velocity = direction * 30;
         yield return new WaitForSeconds(.1f);
@@ -373,8 +379,8 @@ public class Player : MonoBehaviour
     {
         if(collision.collider.CompareTag("SolidEnvironment"))
         {
-            //m_ShouldBeDragged = false;
-            //GiveJump();
+            m_ShouldBeDragged = false;
+            GiveJump();
             
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
@@ -391,20 +397,11 @@ public class Player : MonoBehaviour
                 {
                     Death();
                 }
-                
             }
         }
-
-    }
-
-    private void CheckIfIsGrabbingWall()
-    {
-        if (m_Dot > .75f || m_Dot < -.75f)
+        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
         {
-            if (!m_IsGrippingWall)
-            {
-                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
-            }
+            DeathFromAbove(collision.gameObject);
         }
     }
 
@@ -414,6 +411,25 @@ public class Player : MonoBehaviour
         {
             m_ShouldBeDragged = false;
         }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
+        {
+            DeathFromAbove(collision.gameObject);
+        }
+    }
+
+    private void DeathFromAbove(GameObject iFromPlayer)
+    {
+        Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
+        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.5f)
+        {
+            Death();
+        }
+        iFromPlayer.GetComponent<Player>().DeathFromAboveBump();
+    }
+
+    public void DeathFromAboveBump()
+    {
+        m_Rigidbody.velocity += Vector3.up * bumpFromDeathFromAbove;
     }
 
     private void OnCollisionExit(Collision collision)

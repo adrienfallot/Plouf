@@ -5,6 +5,9 @@ using UnityEngine;
 public class Arrow : MonoBehaviour {
 
 	public Rigidbody rb;
+    public float fallMultiplier = 0.68f;
+    public float lowJumpMultiplier = 1f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +21,19 @@ public class Arrow : MonoBehaviour {
             {
                 transform.eulerAngles = GetRotationFromVelocity(rb.velocity);
             }
-		}
+
+            Vector3 dragVector = Vector3.zero;
+            if (rb.velocity.y < 0)
+            {
+                dragVector = Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            }
+            //tweak de la décélération en montée
+            else if (rb.velocity.y > 0)
+            {
+                dragVector = Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            }
+            rb.velocity += dragVector;
+        }
     }
 
     public static Vector3 GetRotationFromVelocity(Vector3 velocity)
