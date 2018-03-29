@@ -54,6 +54,14 @@ public class Player : MonoBehaviour
     {
         m_IsInAir = IsInAir();
 
+        if(m_IsInAir)
+        {
+            if(!m_IsDraggedDown)
+            {
+                StartCoroutine(DragDownCoroutine());
+            }
+        }
+
         //clamp vitesse
         if (m_Rigidbody.velocity.y < -50)
         {
@@ -233,10 +241,6 @@ public class Player : MonoBehaviour
             direction = (-iInputValue * Vector3.right).normalized;
             CheckPlayerOrientation(iInputValue);
         }
-
-        //yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 50f, startVelocity + direction * 30f, .05f));
-        //yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 30f, startVelocity + direction * 0f, .1f));
-
         
         m_Rigidbody.velocity = direction * 30;
         yield return new WaitForSeconds(.1f);
@@ -373,8 +377,8 @@ public class Player : MonoBehaviour
     {
         if(collision.collider.CompareTag("SolidEnvironment"))
         {
-            //m_ShouldBeDragged = false;
-            //GiveJump();
+            m_ShouldBeDragged = false;
+            GiveJump();
             
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
@@ -394,7 +398,14 @@ public class Player : MonoBehaviour
                 
             }
         }
-
+        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
+        {
+            Debug.Log(Vector3.Dot(collision.gameObject.GetComponent<Rigidbody>().velocity.normalized, transform.up));
+            if (Vector3.Dot(collision.gameObject.GetComponent<Rigidbody>().velocity.normalized, transform.up) > 0.5f)
+            {
+                Death();
+            }
+        }
     }
 
     private void CheckIfIsGrabbingWall()
