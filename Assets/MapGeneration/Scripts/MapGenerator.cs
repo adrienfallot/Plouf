@@ -436,18 +436,19 @@ public class MapGenerator : MonoBehaviour
     bool IsNotCollidingWithPlayer()
     {
         foreach (GameObject player in Players) {
+            Debug.Log("test");
             if (player.transform.position.x > 1 && player.transform.position.x < NUMBER_OF_COLUMN - 1
                && player.transform.position.y < -1 && player.transform.position.y > -NUMBER_OF_ROW + 1) {
-                if (cellValues[-(int)player.transform.position.y][(int)player.transform.position.x] == 1){
+                if (cellValues[Mathf.Max(-(int)player.transform.position.y)][Mathf.Max((int)player.transform.position.x)] == 1){
                     return false;
                 }
-                if (cellValues[(-(int)player.transform.position.y) - 1][(int)player.transform.position.x] == 1){
+                if (cellValues[Mathf.Max((-(int)player.transform.position.y) - 1)][Mathf.Max((int)player.transform.position.x)] == 1){
                     return false;
                 }
-                if (cellValues[-(int)player.transform.position.y][(int)player.transform.position.x + 1] == 1){
+                if (cellValues[Mathf.Max(-(int)player.transform.position.y)][Mathf.Max((int)player.transform.position.x + 1)] == 1){
                     return false;
                 }
-                if (cellValues[(-(int)player.transform.position.y) - 1][(int)player.transform.position.x + 1] == 1){
+                if (cellValues[Mathf.Max((-(int)player.transform.position.y) - 1)][Mathf.Max((int)player.transform.position.x + 1)] == 1){
                     return false;
                 }
             }
