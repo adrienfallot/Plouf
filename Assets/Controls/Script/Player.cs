@@ -168,10 +168,11 @@ public class Player : MonoBehaviour
         GiveJump();
         SpendDash();
         Vector3 startVelocity = m_Rigidbody.velocity;
+        Vector3 direction = (m_FacingRight) ? Vector3.right : -Vector3.right;
         //yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 1.5f, .05f));
         //yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 3.5f, .1f));
-        yield return StartCoroutine(LerpVelocityTo(startVelocity + transform.right * 50f, startVelocity + transform.right * 30f, .05f));
-        yield return StartCoroutine(LerpVelocityTo(startVelocity + transform.right * 30f, startVelocity + transform.right * 0f, .1f));
+        yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 50f, startVelocity + direction * 30f, .05f));
+        yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 30f, startVelocity + direction * 0f, .1f));
         //yield return StartCoroutine(LerpVelocityTo(transform.position + transform.right * 3.5f, .1f));
 
         //m_Rigidbody.AddForce(transform.forward * 10);

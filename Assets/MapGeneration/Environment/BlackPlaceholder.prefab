@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33168428988917586}
   - component: {fileID: 65892481857433538}
   - component: {fileID: 23088468135552142}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlackPlaceholder
   m_TagString: SolidEnvironment
   m_Icon: {fileID: 0}
