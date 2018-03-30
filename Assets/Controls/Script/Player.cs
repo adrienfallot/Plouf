@@ -554,6 +554,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.CompareTag("Spike")){
+            Death();
+            return;
+        }
+    }
+
     private IEnumerator SlowMoCatchArrow()
     {
         //m_Rigidbody.;
