@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4927205675241402}
   - component: {fileID: 33478244763032234}
   - component: {fileID: 23627127026064150}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerDash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4014849445411850}
   - component: {fileID: 33795021765940788}
   - component: {fileID: 23421944358664660}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerAimBot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4091989277992508}
   - component: {fileID: 33518598798858026}
   - component: {fileID: 23686472118931522}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerAimFrontTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4686077513696492}
   - component: {fileID: 33724319907449190}
   - component: {fileID: 23583475469945778}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerWalk1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4178253047147490}
   - component: {fileID: 33526042712371568}
   - component: {fileID: 23129749042250892}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerGrabWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4328672696422042}
   - component: {fileID: 33888767808239602}
   - component: {fileID: 23515405355063310}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerIddle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4288482911293982}
   - component: {fileID: 33854762174454256}
   - component: {fileID: 23018135763323786}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerAimFrontBot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 4427210070197424}
   - component: {fileID: 33321803188056408}
   - component: {fileID: 23423812951603822}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerAimTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4657662712640686}
   - component: {fileID: 33779696662652924}
   - component: {fileID: 23780225753359196}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerFall1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 4587198424642432}
   - component: {fileID: 33543111075769938}
   - component: {fileID: 23972721160828994}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerFall2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 4667825640563808}
   - component: {fileID: 33273428420487170}
   - component: {fileID: 23592760571863088}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerIddle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 4446790703567834}
   - component: {fileID: 33986785053057426}
   - component: {fileID: 23645863458802398}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerWalk2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4438149152881130}
   - component: {fileID: 33869395088425036}
   - component: {fileID: 23110753969593640}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerJumpTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 114451698604047936}
   - component: {fileID: 65022067662097808}
   - component: {fileID: 95136736445297112}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 4272647869124042}
   - component: {fileID: 33929265761443000}
   - component: {fileID: 23877306600262788}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerJumpBot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 4874000744723234}
   - component: {fileID: 33200170623309592}
   - component: {fileID: 23200799522934566}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerAimFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -318,7 +318,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174163379889318}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.013, z: 0}
+  m_LocalPosition: {x: -0.063, y: 0.013, z: 0}
   m_LocalScale: {x: 1.0000005, y: 1, z: 1.0000005}
   m_Children: []
   m_Father: {fileID: 4274177897279048}
@@ -344,7 +344,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1865304400498344}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.69, y: 3.27, z: -7.25}
+  m_LocalPosition: {x: -4.42, y: 3.27, z: -8.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4328672696422042}
@@ -1179,9 +1179,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  jumpMultiplier: 10
-  fallMultiplier: 5.68
-  lowJumpMultiplier: 3.31
+  jumpMultiplier: 12.5
+  fallMultiplier: 4
+  lowJumpMultiplier: 3
   floattingTimeAfterGrip: 0.075
+  dashCooldown: 0.5
+  arrowSpeed: 20
+  arrowOffset: 0.5
+  arrowDisplayTime: 0.2
+  arrow: {fileID: 54020546206725422, guid: 8e818aa68a31a9d4e84462299a90c73f, type: 2}
+  numberOfArrowAtBeginning: 4
   respawnTimer: 1
-  m_Animator: {fileID: 95136736445297112}
+  bumpFromDeathFromAbove: 5
+  m_Animator: {fileID: 0}
