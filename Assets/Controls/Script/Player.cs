@@ -22,6 +22,12 @@ public class Player : MonoBehaviour
 
     public Animator m_Animator = null;
 
+    public int Score = 0;
+    public GameObject Canvas;
+    public GameObject UI;
+
+
+
     private Rigidbody   m_Rigidbody = null;
     private Vector3     m_HorizontalDirection = Vector3.zero;
     private Vector3     m_VerticalDirection = Vector3.zero;
@@ -36,6 +42,7 @@ public class Player : MonoBehaviour
     private int         m_availableDashs = 1;
     private bool        m_FacingRight = true;
     private bool        m_IsInAir = false;
+    private bool        m_IsCloseEnoughToWall = false;
     private bool        m_CanDashAgain = false;
     private bool        m_IsAiming = false;
     private Queue<bool> m_Quiver = new Queue<bool>();
@@ -49,11 +56,18 @@ public class Player : MonoBehaviour
         for(int i=0; i < numberOfArrowAtBeginning;i++){
             m_Quiver.Enqueue(true);
         }
+        UI.transform.GetChild(0).gameObject.GetComponent<TextMesh>().text = "x"+m_Quiver.Count;
     }
 
     private void FixedUpdate()
     {
+        m_IsCloseEnoughToWall = HasGripOnWall((m_FacingRight) ? transform.right : - transform.right);
         m_IsInAir = IsInAir();
+
+        bool isFalling = (m_Rigidbody.velocity.y < 0 ? m_IsInAir : false);
+
+        m_Animator.SetBool("Falling", isFalling);
+        m_Animator.SetBool("GrabingWall", m_IsGrippingWall || m_IsCloseEnoughToWall);
 
         if(m_IsInAir)
         {
@@ -100,9 +114,12 @@ public class Player : MonoBehaviour
             {
                 //m_Rigidbody.velocity += m_HorizontalDirection * speed;
                 transform.Translate(m_HorizontalDirection * speed);
+
+                m_Animator.SetBool("Walking", (m_HorizontalDirection * speed) != Vector3.zero);
             }
-            else if (!m_IsGrippingWall && !m_IsAiming)
+            else if (!m_IsGrippingWall && !m_IsAiming && m_Rigidbody.velocity.y < 0)
             {
+                m_Animator.SetBool("Walking", false);
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
             }
 
@@ -139,11 +156,13 @@ public class Player : MonoBehaviour
                 {
                     arrowInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
                     arrowInstance.velocity = new Vector3(arrowSpeed, 0, 0);
+                    arrowInstance.GetComponent<Arrow>().setOwner(this);
                 }
                 else
                 {
                     arrowInstance = Instantiate(arrow, new Vector3(transform.position.x - arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
                     arrowInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+                    arrowInstance.GetComponent<Arrow>().setOwner(this);
                 }
             }
             else
@@ -151,11 +170,10 @@ public class Player : MonoBehaviour
                 Vector3 vel = arrowSpeed * (m_HorizontalDirection.normalized + m_VerticalDirection);
                 arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized*arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
                 arrowInstance.velocity = vel;
+                arrowInstance.GetComponent<Arrow>().setOwner(this);
             }
             m_Quiver.Dequeue();
-        }
-        else{
-            print("not enough arrow");
+            updateQuiver();
         }
     }
     
@@ -182,6 +200,7 @@ public class Player : MonoBehaviour
                 //si on a la place de sauter, on le dépense ce saut de merde.
                 if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
                 {
+                    m_Animator.SetTrigger("Jump");
                     SpendJump();
                     CancelAim();
                 }
@@ -220,7 +239,6 @@ public class Player : MonoBehaviour
             possibleAimDirections.Add(Vector3.down + Vector3.right * unknown2AMMultiplier);
             possibleAimDirections.Add(Vector3.down);
             aimAnimationNb = GetAnimIndexFromAim(aimDirection, possibleAimDirections);
-            Debug.Log(aimAnimationNb);
         }
     }
 
@@ -286,10 +304,13 @@ public class Player : MonoBehaviour
 
     private IEnumerator DashCoroutine(float iInputValue)
     {
+        m_Animator.SetBool("Dashing", true);
+        
         m_IsDashing = true;
         m_Rigidbody.useGravity = false;
         GiveJump();
         SpendDash();
+
 
         Vector3 startVelocity = m_Rigidbody.velocity;
         Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection * 1.5f).normalized;
@@ -308,6 +329,8 @@ public class Player : MonoBehaviour
 
         m_IsDashing = false;
         m_Rigidbody.useGravity = true;
+
+        m_Animator.SetBool("Dashing", false);
     }
 
     private IEnumerator DashCooldownCoroutine()
@@ -344,20 +367,36 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
+        RaycastHit hit;
 
         bool hasRightGrip = false;
         bool hasLeftGrip = false;
         if (isGoingRight)
         {
-            hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
-
-            //return hasRightGrip;
+            if (Physics.Raycast(transform.position, Vector3.right, out hit))
+            {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                {
+                    if (hit.distance < m_DistToSide + .01f)
+                    {
+                        hasRightGrip = true;
+                    }
+                }
+            }
         }
         else
         {
-            hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
-
-            //return hasLeftGrip;
+            if(Physics.Raycast(transform.position, Vector3.left, out hit))
+            {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                {
+                    if (hit.distance < m_DistToSide + .01f)
+                    {
+                        hasLeftGrip = true;
+                    }
+                }
+            }
+            
         }
 
         return (isGoingRight) ? hasRightGrip : hasLeftGrip;
@@ -428,18 +467,30 @@ public class Player : MonoBehaviour
             
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
-            if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
+            Rigidbody arrowRb = collision.gameObject.GetComponent<Rigidbody>();
+            bool isInFrontOfArrow = false;
+            isInFrontOfArrow = Vector3.Dot(arrowRb.velocity, transform.position - arrowRb.transform.position) > 0;
+                                                        
+
+            if(arrowRb.isKinematic){
                 m_Quiver.Enqueue(true);
+                updateQuiver();
                 Destroy(collision.gameObject);
             }
             else{
                 if (m_IsDashing) {
+                    StartCoroutine(SlowMoCatchArrow());
                     m_Quiver.Enqueue(true);
+                    updateQuiver();
                     Destroy(collision.gameObject);
                 }
-                else
+                else if(isInFrontOfArrow)
                 {
                     Death();
+                    arrowRb.gameObject.GetComponent<Arrow>().getOwner().Score++;
+                    foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
+                        s.UpdateScore();
+                    }
                 }
             }
         }
@@ -447,6 +498,15 @@ public class Player : MonoBehaviour
         {
             DeathFromAbove(collision.gameObject);
         }
+    }
+
+    private IEnumerator SlowMoCatchArrow()
+    {
+        //m_KeepInAir = true;
+
+        yield return new WaitForSeconds(.2f);
+
+        //m_KeepInAir = false;
     }
 
     private void OnCollisionStay(Collision collision)
@@ -460,9 +520,13 @@ public class Player : MonoBehaviour
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.5f)
+        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.85f)
         {
             Death();
+            iFromPlayer.GetComponent<Player>().Score++;
+            foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
+                        s.UpdateScore();
+            }
         }
         iFromPlayer.GetComponent<Player>().DeathFromAboveBump();
     }
@@ -486,10 +550,13 @@ public class Player : MonoBehaviour
         playerScale.x *= -1;
         transform.localScale = playerScale;
         m_FacingRight = !m_FacingRight;
+        UI.transform.localScale = new Vector3( UI.transform.localScale.x*-1, UI.transform.localScale.y, UI.transform.localScale.z);
     }
 
     private void Death()
-    {        
+    {
+        m_Animator.SetBool("Death", true);
+        
         this.enabled = false;
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)
@@ -513,5 +580,10 @@ public class Player : MonoBehaviour
         {
             mesh.gameObject.SetActive(true);
         }
+        m_Animator.SetBool("Death", false);
+    }
+
+    void updateQuiver(){
+        UI.transform.GetChild(0).gameObject.GetComponent<TextMesh>().text = "x"+m_Quiver.Count;
     }
 }

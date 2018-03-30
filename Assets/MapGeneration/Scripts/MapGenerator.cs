@@ -187,6 +187,7 @@ public class MapGenerator : MonoBehaviour
         playerTwo = SmoothPlayerPos(playerTwo);
         playerThree = SmoothPlayerPos(playerThree);
         playerFour = SmoothPlayerPos(playerFour);
+        playerFour = SmoothPlayerPos(playerFive);
         return (IsPathBetweenTwoPoints(playerOne, playerTwo) &&
                 IsPathBetweenTwoPoints(playerTwo, playerThree) &&
                 IsPathBetweenTwoPoints(playerThree, playerFour) &&
@@ -246,19 +247,19 @@ public class MapGenerator : MonoBehaviour
     {
         if(player[0] <= 0)
         {
-            player[0]++;
+            player[0] = 1;
         }
         else if (player[0] >= NUMBER_OF_ROW-1)
         {
-            player[0]--;
+            player[0] = NUMBER_OF_ROW-2;
         }
         if (player[1] <= 0)
         {
-            player[1]++;
+            player[1] = 1;
         }
         else if (player[1] >= NUMBER_OF_COLUMN)
         {
-            player[1]--;
+            player[1] = NUMBER_OF_COLUMN-1;
         }
         return player;
     }
@@ -440,20 +441,82 @@ public class MapGenerator : MonoBehaviour
 
     bool IsNotCollidingWithPlayer()
     {
+        int x = 0;
+        int y = 0;
+        float tempY = 0;
         foreach (GameObject player in Players) {
-            Debug.Log("test");
+            if(player.transform.position.x >= NUMBER_OF_COLUMN)
+            {
+                tempY = ( NUMBER_OF_COLUMN * 2 + player.transform.position.x )- 1;
+            }
+            else
+            {
+                tempY = player.transform.position.x;
+            }
             if (player.transform.position.x > 1 && player.transform.position.x < NUMBER_OF_COLUMN - 1
-               && player.transform.position.y < -1 && player.transform.position.y > -NUMBER_OF_ROW + 1) {
-                if (cellValues[Mathf.Max(-(int)player.transform.position.y)][Mathf.Max((int)player.transform.position.x)] == 1){
+               && tempY < -1 && tempY > -NUMBER_OF_ROW + 1) {
+                x = Mathf.Max(-(int)tempY, 0);
+                y = Mathf.Max((int)player.transform.position.x, 0);
+                if(x >= NUMBER_OF_ROW-1)
+                {
+                    x = NUMBER_OF_ROW-2;
+                }
+                if(y >= NUMBER_OF_COLUMN)
+                {
+                    y = NUMBER_OF_COLUMN - 2;
+                }
+                if (cellValues[x][y] == 1){
+                    Debug.Log("AAA");
+                    Debug.Log(x + " " + y);
                     return false;
                 }
-                if (cellValues[Mathf.Max((-(int)player.transform.position.y) - 1)][Mathf.Max((int)player.transform.position.x)] == 1){
+                x = Mathf.Max((-(int)tempY) + 1, 0);
+                y = Mathf.Max((int)player.transform.position.x, 0);
+                if (x >= NUMBER_OF_ROW-1)
+                {
+                    x = NUMBER_OF_ROW-2;
+                }
+                if (y >= NUMBER_OF_COLUMN)
+                {
+                    y = NUMBER_OF_COLUMN-2;
+                }
+                if (cellValues[x][y] == 1)
+                {
+                    cellValues[x][y] = 2;
+                    Debug.Log("BBB");
+                    Debug.Log(x + " " + y);
                     return false;
                 }
-                if (cellValues[Mathf.Max(-(int)player.transform.position.y)][Mathf.Max((int)player.transform.position.x + 1)] == 1){
+                x = Mathf.Max(-(int)tempY, 0);
+                y = Mathf.Max((int)player.transform.position.x + 1, 0);
+                if (x >= NUMBER_OF_ROW-1)
+                {
+                    x = NUMBER_OF_ROW - 2;
+                }
+                if (y >= NUMBER_OF_COLUMN)
+                {
+                    y = NUMBER_OF_COLUMN - 2;
+                }
+                if (cellValues[x][y] == 1)
+                {
+                    Debug.Log("CCC");
+                    Debug.Log(x + " " + y);
                     return false;
                 }
-                if (cellValues[Mathf.Max((-(int)player.transform.position.y) - 1)][Mathf.Max((int)player.transform.position.x + 1)] == 1){
+                x = Mathf.Max((-(int)tempY) + 1, 0);
+                y = Mathf.Max((int)player.transform.position.x + 1, 0);
+                if (x >= NUMBER_OF_ROW-1)
+                {
+                    x = NUMBER_OF_ROW - 2;
+                }
+                if (y >= NUMBER_OF_COLUMN)
+                {
+                    y = NUMBER_OF_COLUMN-2;
+                }
+                if (cellValues[x][y] == 1)
+                {
+                    Debug.Log("DDD");
+                    Debug.Log(x + " " + y);
                     return false;
                 }
             }
@@ -839,7 +902,7 @@ public class MapGenerator : MonoBehaviour
         {
             foreach (int[] coordinate in spawns)
             {
-                GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
+                //GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
             }
         }
         

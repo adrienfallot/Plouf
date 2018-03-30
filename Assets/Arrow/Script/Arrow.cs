@@ -8,6 +8,8 @@ public class Arrow : MonoBehaviour {
     public float fallMultiplier = 0.68f;
     public float lowJumpMultiplier = 1f;
 
+    private Player Owner;
+
 
 	// Use this for initialization
 	void Start () {
@@ -41,6 +43,13 @@ public class Arrow : MonoBehaviour {
         float angleZ = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
 
         return new Vector3(0, 0, angleZ);
+    }
+
+    public void setOwner(Player p){
+        this.Owner = p;
+    }
+    public Player getOwner(){
+        return Owner;
     }
 
 	void OnCollisionEnter(Collision collision){
