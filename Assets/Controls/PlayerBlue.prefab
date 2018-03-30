@@ -1274,9 +1274,9 @@ MonoBehaviour:
   bumpFromDeathFromAbove: 5
   m_Animator: {fileID: 0}
   deathSound:
+  - {fileID: 8300000, guid: db19037233c40b5478f3986832d75e3f, type: 3}
   - {fileID: 8300000, guid: 7bbe2868f3f5d5b4cbb891ead071537e, type: 3}
   - {fileID: 8300000, guid: 0f57c3c82fb3f5d47a9e40a75791e924, type: 3}
-  - {fileID: 8300000, guid: db19037233c40b5478f3986832d75e3f, type: 3}
   - {fileID: 8300000, guid: 5fef9c24b91df3f4fb03475dbb192c5d, type: 3}
   pickupSound:
   - {fileID: 8300000, guid: e0fc03c9275d8bd438c262f40a8440ce, type: 3}
@@ -1294,11 +1294,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 503c0c7093270d24d966216bf63435c1, type: 3}
   - {fileID: 8300000, guid: 2d6f89bb24e092d4d87173c3644407b1, type: 3}
   fireSound:
-  - {fileID: 8300000, guid: ff07a40f4642e89458555448903d17b9, type: 3}
   - {fileID: 8300000, guid: 85190a4d2f5d4db4d9b245eb81ff1967, type: 3}
+  - {fileID: 8300000, guid: ff07a40f4642e89458555448903d17b9, type: 3}
   dashSound:
   - {fileID: 8300000, guid: 69318cd1073649949a9c5ca0f743af49, type: 3}
-  - {fileID: 8300000, guid: 8d472ac9cab9f9b44b8d84232d4334b3, type: 3}
   - {fileID: 8300000, guid: 2dc507007caeca84596d7aaa4619da64, type: 3}
+  - {fileID: 8300000, guid: 8d472ac9cab9f9b44b8d84232d4334b3, type: 3}
   music:
-  - {fileID: 8300000, guid: 5d1bec91cd2ca7246bbe4bead38674bc, type: 3}
+  - {fileID: 0}

@@ -28,7 +28,6 @@ public class Player : MonoBehaviour
     public AudioClip[] punchSound = null;
     public AudioClip[] fireSound = null;
     public AudioClip[] dashSound = null;
-    public AudioClip[] music = null;
 
     private AudioSource source;
 
