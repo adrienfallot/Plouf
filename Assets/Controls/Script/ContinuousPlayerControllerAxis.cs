@@ -8,15 +8,18 @@ public class ContinuousPlayerControllerAxis : PlayerControllerAxis {
     protected float value;
     protected Action<float> axisAction;
 
-    public ContinuousPlayerControllerAxis(string iName, Action<float> iAxisAction)
+    public ContinuousPlayerControllerAxis(Player iPlayer, string iName, Action<float> iAxisAction)
     {
+        player = iPlayer;
         name = iName;
         axisAction = iAxisAction;
     }
 
     public override void ExecuteInput()
     {
-        value = Input.GetAxisRaw(name);
-        axisAction(value);
+        if(player.enabled){
+            value = Input.GetAxisRaw(name);
+            axisAction(value);
+        }
     }
 }

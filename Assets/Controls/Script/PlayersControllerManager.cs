@@ -33,25 +33,25 @@ public class PlayersControllerManager : MonoBehaviour
 
     void Start ()
     {
-        PlayerControllerAxis player1HorizontalAxis = new ContinuousPlayerControllerAxis(m_HorizontalP1Axis, player1.MoveHorizontal);
-        PlayerControllerAxis player1VerticalAxis = new ContinuousPlayerControllerAxis(m_VerticalP1Axis, player1.MoveRight);
-        PlayerControllerAxis player1JumpAxis = new SpontaneousPlayerControllerAxis(m_JumpP1Axis, player1.Jump);
-        PlayerControllerAxis player1FireAxis = new SpontaneousPlayerControllerAxis(m_FireP1Axis, player1.Fire);
+        PlayerControllerAxis player1HorizontalAxis = new ContinuousPlayerControllerAxis(player1, m_HorizontalP1Axis, player1.MoveHorizontal);
+        PlayerControllerAxis player1VerticalAxis = new ContinuousPlayerControllerAxis(player1, m_VerticalP1Axis, player1.MoveRight);
+        PlayerControllerAxis player1JumpAxis = new SpontaneousPlayerControllerAxis(player1, m_JumpP1Axis, player1.Jump);
+        PlayerControllerAxis player1FireAxis = new SpontaneousPlayerControllerAxis(player1, m_FireP1Axis, player1.Fire);
 
-        PlayerControllerAxis player2HorizontalAxis = new ContinuousPlayerControllerAxis(m_HorizontalP2Axis, player2.MoveHorizontal);
-        PlayerControllerAxis player2VerticalAxis = new ContinuousPlayerControllerAxis(m_VerticalP2Axis, player2.MoveRight);
-        PlayerControllerAxis player2JumpAxis = new SpontaneousPlayerControllerAxis(m_JumpP2Axis, player2.Jump);
-        PlayerControllerAxis player2FireAxis = new SpontaneousPlayerControllerAxis(m_FireP2Axis, player2.Fire);
+        PlayerControllerAxis player2HorizontalAxis = new ContinuousPlayerControllerAxis(player2, m_HorizontalP2Axis, player2.MoveHorizontal);
+        PlayerControllerAxis player2VerticalAxis = new ContinuousPlayerControllerAxis(player2, m_VerticalP2Axis, player2.MoveRight);
+        PlayerControllerAxis player2JumpAxis = new SpontaneousPlayerControllerAxis(player2, m_JumpP2Axis, player2.Jump);
+        PlayerControllerAxis player2FireAxis = new SpontaneousPlayerControllerAxis(player2, m_FireP2Axis, player2.Fire);
 
-        PlayerControllerAxis player3HorizontalAxis = new ContinuousPlayerControllerAxis(m_HorizontalP3Axis, player3.MoveHorizontal);
-        PlayerControllerAxis player3VerticalAxis = new ContinuousPlayerControllerAxis(m_VerticalP3Axis, player3.MoveRight);
-        PlayerControllerAxis player3JumpAxis = new SpontaneousPlayerControllerAxis(m_JumpP3Axis, player3.Jump);
-        PlayerControllerAxis player3FireAxis = new SpontaneousPlayerControllerAxis(m_FireP3Axis, player3.Fire);
+        PlayerControllerAxis player3HorizontalAxis = new ContinuousPlayerControllerAxis(player3, m_HorizontalP3Axis, player3.MoveHorizontal);
+        PlayerControllerAxis player3VerticalAxis = new ContinuousPlayerControllerAxis(player3, m_VerticalP3Axis, player3.MoveRight);
+        PlayerControllerAxis player3JumpAxis = new SpontaneousPlayerControllerAxis(player3, m_JumpP3Axis, player3.Jump);
+        PlayerControllerAxis player3FireAxis = new SpontaneousPlayerControllerAxis(player3, m_FireP3Axis, player3.Fire);
 
-        PlayerControllerAxis player4HorizontalAxis = new ContinuousPlayerControllerAxis(m_HorizontalP4Axis, player4.MoveHorizontal);
-        PlayerControllerAxis player4VerticalAxis = new ContinuousPlayerControllerAxis(m_VerticalP4Axis, player4.MoveRight);
-        PlayerControllerAxis player4JumpAxis = new SpontaneousPlayerControllerAxis(m_JumpP4Axis, player4.Jump);
-        PlayerControllerAxis player4FireAxis = new SpontaneousPlayerControllerAxis(m_FireP4Axis, player4.Fire);
+        PlayerControllerAxis player4HorizontalAxis = new ContinuousPlayerControllerAxis(player4, m_HorizontalP4Axis, player4.MoveHorizontal);
+        PlayerControllerAxis player4VerticalAxis = new ContinuousPlayerControllerAxis(player4, m_VerticalP4Axis, player4.MoveRight);
+        PlayerControllerAxis player4JumpAxis = new SpontaneousPlayerControllerAxis(player4, m_JumpP4Axis, player4.Jump);
+        PlayerControllerAxis player4FireAxis = new SpontaneousPlayerControllerAxis(player4, m_FireP4Axis, player4.Fire);
 
 
         m_ControllersAxis.Add(player1HorizontalAxis);
