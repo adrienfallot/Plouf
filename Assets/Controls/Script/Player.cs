@@ -54,15 +54,6 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(Input.GetAxis("Horizontal_P3") != 0){
-            Debug.Log("3");
-        }
-
-        if(Input.GetAxis("Horizontal_P4") != 0){
-            Debug.Log("4");
-        }
-
-
         m_IsCloseEnoughToWall = HasGripOnWall((m_FacingRight) ? transform.right : - transform.right);
         m_IsInAir = IsInAir();
 
@@ -497,11 +488,11 @@ public class Player : MonoBehaviour
 
     private IEnumerator SlowMoCatchArrow()
     {
-        m_KeepInAir = true;
+        //m_KeepInAir = true;
 
         yield return new WaitForSeconds(.2f);
 
-        m_KeepInAir = false;
+        //m_KeepInAir = false;
     }
 
     private void OnCollisionStay(Collision collision)
@@ -515,7 +506,7 @@ public class Player : MonoBehaviour
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.75f)
+        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.85f)
         {
             Death();
         }

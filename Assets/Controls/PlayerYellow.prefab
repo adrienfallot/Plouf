@@ -1179,13 +1179,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  jumpMultiplier: 10
-  fallMultiplier: 5.68
-  lowJumpMultiplier: 3.31
+  jumpMultiplier: 12.5
+  fallMultiplier: 4
+  lowJumpMultiplier: 3
   floattingTimeAfterGrip: 0.075
-  dashCooldown: 1
-  arrowSpeed: 30
-  arrowOffset: 2
+  dashCooldown: 0.5
+  arrowSpeed: 20
+  arrowOffset: 0.5
   arrowDisplayTime: 0.2
   arrow: {fileID: 54020546206725422, guid: 8e818aa68a31a9d4e84462299a90c73f, type: 2}
   numberOfArrowAtBeginning: 4
