@@ -461,7 +461,7 @@ public class Player : MonoBehaviour
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
             Rigidbody arrowRb = collision.gameObject.GetComponent<Rigidbody>();
             bool isInFrontOfArrow = false;
-            isInFrontOfArrow = Vector3.Dot(arrowRb.velocity, m_Rigidbody.velocity) < 0;
+            isInFrontOfArrow = Vector3.Dot(arrowRb.velocity, transform.position - arrowRb.transform.position) > 0;
                                                         
 
             if(arrowRb.isKinematic){
