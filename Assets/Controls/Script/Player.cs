@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     private bool        m_IsCloseEnoughToWall = false;
     private bool        m_CanDashAgain = false;
     private bool        m_IsAiming = false;
+    private bool        m_IsInSlowMo = false;
     private Queue<bool> m_Quiver = new Queue<bool>();
 
     private void Start()
@@ -79,11 +80,6 @@ public class Player : MonoBehaviour
             }
         }
 
-        if(m_IsAiming)
-        {
-            m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
-        }
-
         //clamp vitesse
         if (m_Rigidbody.velocity.y < -50)
         {
@@ -122,7 +118,7 @@ public class Player : MonoBehaviour
             else if (!m_IsGrippingWall && !m_IsAiming && m_Rigidbody.velocity.y < 0)
             {
                 m_Animator.SetBool("Walking", false);
-                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
+                StartCoroutine(GrippingWallCoroutine(m_HorizontalDirection.normalized));
             }
 
             CheckPlayerOrientation(iInputValue);
@@ -207,18 +203,48 @@ public class Player : MonoBehaviour
     {
         if(!m_IsAiming)
         {
+            Vector3 startVelocity = (m_VerticalDirection.normalized + m_HorizontalDirection.normalized).normalized;
             StartCoroutine(AimCouroutine());
+            StartCoroutine(SlowMo(startVelocity));
         }
     }
 
     private void CancelAim()
     {
         m_IsAiming = false;
+        m_IsInSlowMo = false;
+    }
+
+    private IEnumerator SlowMo(Vector3 iStartVelocity)
+    {
+        m_IsInSlowMo = true;
+        while(m_IsInSlowMo && m_IsInAir)
+        {
+            yield return new WaitForEndOfFrame();
+            transform.position += iStartVelocity / 40 ;
+            iStartVelocity -= new Vector3(0, Time.deltaTime, 0);
+        }
+    }
+
+    //pour le catch de la flèche
+    private IEnumerator SlowMoWithDuration(Vector3 iStartVelocity, float iDuration)
+    {
+        m_IsInSlowMo = true;
+        float count = iDuration;
+        while (m_IsInSlowMo && m_IsInAir && count >= 0)
+        {
+            yield return new WaitForEndOfFrame();
+            transform.position += iStartVelocity / 40;
+            iStartVelocity -= new Vector3(0, Time.deltaTime, 0);
+            iDuration -= Time.deltaTime;
+        }
     }
 
     private IEnumerator AimCouroutine()
     {
         m_IsAiming = true;
+        m_Rigidbody.isKinematic = true;
+
         Vector3 aimDirection = Vector3.zero;
         float aimAnimationNb = 0;
         while (m_IsAiming)
@@ -234,6 +260,9 @@ public class Player : MonoBehaviour
             possibleAimDirections.Add(Vector3.down);
             aimAnimationNb = GetAnimIndexFromAim(aimDirection, possibleAimDirections);
         }
+
+        m_Rigidbody.isKinematic = false;
+
     }
 
     private float GetAnimIndexFromAim(Vector3 iDirection, List<Vector3> iOthers)
