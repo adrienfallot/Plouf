@@ -458,7 +458,7 @@ public class Player : MonoBehaviour
             GiveJump();
             
         }
-         if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
+        if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
             Rigidbody arrowRb = collision.gameObject.GetComponent<Rigidbody>();
             bool isInFrontOfArrow = false;
             isInFrontOfArrow = Vector3.Dot(arrowRb.velocity, transform.position - arrowRb.transform.position) > 0;
@@ -476,6 +476,7 @@ public class Player : MonoBehaviour
                 }
                 else if(isInFrontOfArrow)
                 {
+                    Destroy(collision.gameObject);
                     Death();
                 }
             }
@@ -553,6 +554,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(respawnTimer);
         
         this.enabled = true;
+        m_Quiver.Enqueue(true);        
         
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)
