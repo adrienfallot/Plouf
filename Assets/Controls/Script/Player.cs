@@ -32,6 +32,12 @@ public class Player : MonoBehaviour
 
     private AudioSource source;
 
+    public int Score = 0;
+    public GameObject Canvas;
+    public GameObject UI;
+
+
+
     private Rigidbody   m_Rigidbody = null;
     private Vector3     m_HorizontalDirection = Vector3.zero;
     private Vector3     m_VerticalDirection = Vector3.zero;
@@ -70,6 +76,7 @@ public class Player : MonoBehaviour
         for(int i=0; i < numberOfArrowAtBeginning;i++){
             m_Quiver.Enqueue(true);
         }
+        UI.transform.GetChild(0).gameObject.GetComponent<TextMesh>().text = "x"+m_Quiver.Count;
     }
 
     private void FixedUpdate()
@@ -165,12 +172,14 @@ public class Player : MonoBehaviour
                     arrowInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
                     arrowInstance.GetComponent<Arrow>().direction = Vector3.right;
                     arrowInstance.velocity = new Vector3(arrowSpeed, 0, 0);
+                    arrowInstance.GetComponent<Arrow>().setOwner(this);
                 }
                 else
                 {
                     arrowInstance = Instantiate(arrow, new Vector3(transform.position.x - arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
                     arrowInstance.GetComponent<Arrow>().direction = Vector3.left;
                     arrowInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+                    arrowInstance.GetComponent<Arrow>().setOwner(this);
                 }
             }
             else
@@ -178,12 +187,11 @@ public class Player : MonoBehaviour
                 Vector3 vel = arrowSpeed * (m_HorizontalDirection.normalized + m_VerticalDirection);
                 arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized*arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
                 arrowInstance.velocity = vel;
+                arrowInstance.GetComponent<Arrow>().setOwner(this);
             }
             source.PlayOneShot(fireSound[Random.Range(0, fireSound.Length)], 1.0f);
             m_Quiver.Dequeue();
-        }
-        else{
-            print("not enough arrow");
+            updateQuiver();
         }
     }
     
@@ -530,6 +538,7 @@ public class Player : MonoBehaviour
             {
                 source.PlayOneShot(pickupSound[Random.Range(0, pickupSound.Length)], 1.0f);
                 m_Quiver.Enqueue(true);
+                updateQuiver();
                 Destroy(collision.gameObject);
             }
             else{
@@ -537,12 +546,17 @@ public class Player : MonoBehaviour
                     StartCoroutine(SlowMoCatchArrow());
                     source.PlayOneShot(pickupSound[Random.Range(0, pickupSound.Length)], 1.0f);
                     m_Quiver.Enqueue(true);
+                    updateQuiver();
                     Destroy(collision.gameObject);
                 }
                 else if(isInFrontOfArrow)
                 {
                     Destroy(collision.gameObject);
                     Death();
+                    arrowRb.gameObject.GetComponent<Arrow>().getOwner().Score++;
+                    foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
+                        s.UpdateScore();
+                    }
                 }
             }
         }
@@ -558,6 +572,11 @@ public class Player : MonoBehaviour
     {
         if(other.CompareTag("Spike")){
             Death();
+            Score--;
+            foreach (Score s in Canvas.GetComponentsInChildren<Score>())
+            {
+                s.UpdateScore();
+            }
             return;
         }
     }
@@ -586,6 +605,10 @@ public class Player : MonoBehaviour
         {
             source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
             Death();
+            iFromPlayer.GetComponent<Player>().Score++;
+            foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
+                        s.UpdateScore();
+            }
         }
     }
 
@@ -608,11 +631,13 @@ public class Player : MonoBehaviour
         playerScale.x *= -1;
         transform.localScale = playerScale;
         m_FacingRight = !m_FacingRight;
+        UI.transform.localScale = new Vector3( UI.transform.localScale.x*-1, UI.transform.localScale.y, UI.transform.localScale.z);
     }
 
     private void Death()
     {
         source.PlayOneShot(deathSound[Random.Range(0, deathSound.Length)], 1.0f);
+        m_Animator.SetBool("Death", true);
         this.enabled = false;
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)
@@ -637,5 +662,10 @@ public class Player : MonoBehaviour
         {
             mesh.gameObject.SetActive(true);
         }
+        m_Animator.SetBool("Death", false);
+    }
+
+    void updateQuiver(){
+        UI.transform.GetChild(0).gameObject.GetComponent<TextMesh>().text = "x"+m_Quiver.Count;
     }
 }

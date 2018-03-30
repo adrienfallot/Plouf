@@ -10,8 +10,8 @@ public class Arrow : MonoBehaviour {
     public Vector3 direction = Vector3.zero;
 
 	public AudioClip[] arrowImpactSound = null;
-
-	private AudioSource source = null;
+    private AudioSource source = null;
+    private Player Owner;
 
 	void Awake()
 	{
@@ -50,6 +50,13 @@ public class Arrow : MonoBehaviour {
         float angleZ = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
 
         return new Vector3(0, 0, angleZ);
+    }
+
+    public void setOwner(Player p){
+        this.Owner = p;
+    }
+    public Player getOwner(){
+        return Owner;
     }
 
 	void OnCollisionEnter(Collision collision){
