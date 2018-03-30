@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     public float bumpFromCollision = 5f;
 
     public Animator m_Animator = null;
+    public GameObject[] trails = null;
 
     private Rigidbody   m_Rigidbody = null;
     private Vector3     m_HorizontalDirection = Vector3.zero;
@@ -44,6 +45,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        foreach(GameObject trail in trails)
+        {
+            trail.SetActive(false);
+        }
         m_Animator = GetComponent<Animator>();
         m_DistToGround = GetComponent<Collider>().bounds.extents.y;
         m_DistToSide = GetComponent<Collider>().bounds.extents.x;
@@ -328,7 +333,10 @@ public class Player : MonoBehaviour
     private IEnumerator DashCoroutine(float iInputValue)
     {
         m_Animator.SetBool("Dashing", true);
-        
+        foreach (GameObject trail in trails)
+        {
+            trail.SetActive(true);
+        }
         m_IsDashing = true;
         m_Rigidbody.useGravity = false;
         GiveJump();
@@ -352,7 +360,10 @@ public class Player : MonoBehaviour
 
         m_IsDashing = false;
         m_Rigidbody.useGravity = true;
-
+        foreach (GameObject trail in trails)
+        {
+            trail.SetActive(false);
+        }
         m_Animator.SetBool("Dashing", false);
     }
 
