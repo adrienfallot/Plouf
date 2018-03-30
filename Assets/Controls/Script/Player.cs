@@ -22,6 +22,16 @@ public class Player : MonoBehaviour
 
     public Animator m_Animator = null;
 
+    public AudioClip[] deathSound = null;
+    public AudioClip[] pickupSound = null;
+    public AudioClip[] deathFromAboveSound = null;
+    public AudioClip[] punchSound = null;
+    public AudioClip[] fireSound = null;
+    public AudioClip[] dashSound = null;
+    public AudioClip[] music = null;
+
+    private AudioSource source;
+
     private Rigidbody   m_Rigidbody = null;
     private Vector3     m_HorizontalDirection = Vector3.zero;
     private Vector3     m_VerticalDirection = Vector3.zero;
@@ -40,6 +50,11 @@ public class Player : MonoBehaviour
     private bool        m_CanDashAgain = false;
     private bool        m_IsAiming = false;
     private Queue<bool> m_Quiver = new Queue<bool>();
+
+    void Awake()
+    {
+        source = GetComponent<AudioSource>();
+    }
 
     private void Start()
     {
@@ -162,6 +177,7 @@ public class Player : MonoBehaviour
                 arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized*arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
                 arrowInstance.velocity = vel;
             }
+            source.PlayOneShot(fireSound[Random.Range(0, fireSound.Length)], 1.0f);
             m_Quiver.Dequeue();
         }
         else{
@@ -258,6 +274,7 @@ public class Player : MonoBehaviour
             {
                 if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0 && m_CanDashAgain)
                 {
+                    source.PlayOneShot(dashSound[Random.Range(0, dashSound.Length)], 1.0f);
                     StartCoroutine(DashCoroutine(iInputValue));
                     StartCoroutine(DashCooldownCoroutine());
                 }
@@ -465,12 +482,14 @@ public class Player : MonoBehaviour
                                                         
 
             if(arrowRb.isKinematic){
+                source.PlayOneShot(pickupSound[Random.Range(0, pickupSound.Length)], 1.0f);
                 m_Quiver.Enqueue(true);
                 Destroy(collision.gameObject);
             }
             else{
                 if (m_IsDashing) {
                     StartCoroutine(SlowMoCatchArrow());
+                    source.PlayOneShot(pickupSound[Random.Range(0, pickupSound.Length)], 1.0f);
                     m_Quiver.Enqueue(true);
                     Destroy(collision.gameObject);
                 }
@@ -482,6 +501,7 @@ public class Player : MonoBehaviour
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
         {
+            source.PlayOneShot(punchSound[Random.Range(0, punchSound.Length)], 0.7f);
             DeathFromAbove(collision.gameObject);
         }
     }
@@ -508,6 +528,7 @@ public class Player : MonoBehaviour
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
         if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.85f)
         {
+            source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
             Death();
         }
         iFromPlayer.GetComponent<Player>().DeathFromAboveBump();
@@ -535,7 +556,8 @@ public class Player : MonoBehaviour
     }
 
     private void Death()
-    {        
+    {
+        source.PlayOneShot(deathSound[Random.Range(0, deathSound.Length)], 1.0f);
         this.enabled = false;
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)
