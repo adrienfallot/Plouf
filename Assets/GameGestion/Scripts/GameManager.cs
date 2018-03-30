@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null; 
 
 	public MapGenerator m_mapGenerator = null;
+	public BackGroundGenerator m_backgroundGenerator = null;
 
 	private int nextSpawn = 0;
 
@@ -42,5 +43,6 @@ public class GameManager : MonoBehaviour {
     public void regenerateMap()
     {
         m_mapGenerator.RegenerateMap();
+		m_backgroundGenerator.InstantiateBackground();
     }
 }

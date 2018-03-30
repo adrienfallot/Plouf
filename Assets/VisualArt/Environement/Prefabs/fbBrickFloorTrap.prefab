@@ -57,8 +57,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -8.797373, y: -2.0579987, z: -1.2035794}
+  m_LocalScale: {x: 1.11, y: 1.11, z: 1}
   m_Children:
   - {fileID: 420408}
   m_Father: {fileID: 0}
@@ -185,7 +185,7 @@ MonoBehaviour:
   playerTag: Player
   activeDuration: 2
   inactiveDuration: 2
-  startActive: 1
+  startActive: 0
   randomize: 1
 --- !u!1001 &100100000
 Prefab:

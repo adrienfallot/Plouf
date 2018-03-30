@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 114203996572367556}
   - component: {fileID: 65218548956582836}
   - component: {fileID: 95189078212575550}
+  - component: {fileID: 82635392914077664}
   m_Layer: 9
   m_Name: PlayerGreen
   m_TagString: Untagged
@@ -1298,8 +1299,88 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.71987915, y: 1.144305, z: 1.0000002}
+  m_Size: {x: 0.71987915, y: 1.144305, z: 0.7}
   m_Center: {x: 0.0042443275, y: 0.072152495, z: 0}
+--- !u!82 &82635392914077664
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1198070104851976}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!95 &95189078212575550
 Animator:
   serializedVersion: 3
@@ -1794,13 +1875,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  jumpMultiplier: 10
-  fallMultiplier: 5.68
-  lowJumpMultiplier: 3.31
+  jumpMultiplier: 12.5
+  fallMultiplier: 4
+  lowJumpMultiplier: 3
   floattingTimeAfterGrip: 0.075
-  dashCooldown: 1
-  arrowSpeed: 30
-  arrowOffset: 2
+  dashCooldown: 0.5
+  arrowSpeed: 20
+  arrowOffset: 0.5
   arrowDisplayTime: 0.2
   arrow: {fileID: 54020546206725422, guid: 8e818aa68a31a9d4e84462299a90c73f, type: 2}
   numberOfArrowAtBeginning: 4
@@ -1813,3 +1894,32 @@ MonoBehaviour:
   - {fileID: 1392407325556478}
   - {fileID: 1476177357751066}
   - {fileID: 1933287919977856}
+  deathSound:
+  - {fileID: 8300000, guid: db19037233c40b5478f3986832d75e3f, type: 3}
+  - {fileID: 8300000, guid: 7bbe2868f3f5d5b4cbb891ead071537e, type: 3}
+  - {fileID: 8300000, guid: 0f57c3c82fb3f5d47a9e40a75791e924, type: 3}
+  - {fileID: 8300000, guid: 5fef9c24b91df3f4fb03475dbb192c5d, type: 3}
+  pickupSound:
+  - {fileID: 8300000, guid: e0fc03c9275d8bd438c262f40a8440ce, type: 3}
+  - {fileID: 8300000, guid: 01946cc18ad5939488731813bcc4dba7, type: 3}
+  - {fileID: 8300000, guid: b7af895a8acf6ae42ad9d78edb2913cb, type: 3}
+  - {fileID: 8300000, guid: 041f19b3f459bbe40a38de159ffb8c9a, type: 3}
+  deathFromAboveSound:
+  - {fileID: 0}
+  punchSound:
+  - {fileID: 8300000, guid: 422c457a9774bf64c9e754c7bb25c886, type: 3}
+  - {fileID: 8300000, guid: 2b95dfca3dc498346a1d450ec7b313de, type: 3}
+  - {fileID: 8300000, guid: fd3a0654d3d63bc4fa5f584f853539c5, type: 3}
+  - {fileID: 8300000, guid: 3fb1b704f9e52df4d810367e8d4ea640, type: 3}
+  - {fileID: 8300000, guid: a1c48488354938240a59668aa34e71e4, type: 3}
+  - {fileID: 8300000, guid: 503c0c7093270d24d966216bf63435c1, type: 3}
+  - {fileID: 8300000, guid: 2d6f89bb24e092d4d87173c3644407b1, type: 3}
+  fireSound:
+  - {fileID: 8300000, guid: 85190a4d2f5d4db4d9b245eb81ff1967, type: 3}
+  - {fileID: 8300000, guid: ff07a40f4642e89458555448903d17b9, type: 3}
+  dashSound:
+  - {fileID: 8300000, guid: 69318cd1073649949a9c5ca0f743af49, type: 3}
+  - {fileID: 8300000, guid: 2dc507007caeca84596d7aaa4619da64, type: 3}
+  - {fileID: 8300000, guid: 8d472ac9cab9f9b44b8d84232d4334b3, type: 3}
+  music:
+  - {fileID: 0}

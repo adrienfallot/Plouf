@@ -23,6 +23,15 @@ public class Player : MonoBehaviour
     public Animator m_Animator = null;
     public GameObject[] trails = null;
 
+    public AudioClip[] deathSound = null;
+    public AudioClip[] pickupSound = null;
+    public AudioClip[] deathFromAboveSound = null;
+    public AudioClip[] punchSound = null;
+    public AudioClip[] fireSound = null;
+    public AudioClip[] dashSound = null;
+
+    private AudioSource source;
+
     private Rigidbody   m_Rigidbody = null;
     private Vector3     m_HorizontalDirection = Vector3.zero;
     private Vector3     m_VerticalDirection = Vector3.zero;
@@ -43,6 +52,11 @@ public class Player : MonoBehaviour
     private bool        m_IsInSlowMo = false;
     private Queue<bool> m_Quiver = new Queue<bool>();
 
+    void Awake()
+    {
+        source = GetComponent<AudioSource>();
+    }
+
     private void Start()
     {
         foreach(GameObject trail in trails)
@@ -60,15 +74,6 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(Input.GetAxis("Horizontal_P3") != 0){
-            Debug.Log("3");
-        }
-
-        if(Input.GetAxis("Horizontal_P4") != 0){
-            Debug.Log("4");
-        }
-
-
         m_IsCloseEnoughToWall = HasGripOnWall((m_FacingRight) ? transform.right : - transform.right);
         m_IsInAir = IsInAir();
 
@@ -174,6 +179,7 @@ public class Player : MonoBehaviour
                 arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized*arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
                 arrowInstance.velocity = vel;
             }
+            source.PlayOneShot(fireSound[Random.Range(0, fireSound.Length)], 1.0f);
             m_Quiver.Dequeue();
         }
         else{
@@ -208,7 +214,7 @@ public class Player : MonoBehaviour
 
     public void Aim()
     {
-        if(!m_IsAiming)
+        if(!m_IsAiming && (m_Quiver.Count != 0))
         {
             Vector3 startVelocity = (m_VerticalDirection.normalized + m_HorizontalDirection.normalized).normalized;
             StartCoroutine(AimCouroutine());
@@ -249,11 +255,12 @@ public class Player : MonoBehaviour
 
     private IEnumerator AimCouroutine()
     {
+        m_Animator.SetBool("Aiming", true);
         m_IsAiming = true;
         m_Rigidbody.isKinematic = true;
 
         Vector3 aimDirection = Vector3.zero;
-        float aimAnimationNb = 0;
+        float aimAnimationNb = 2;
         while (m_IsAiming)
         {
             yield return new WaitForEndOfFrame();
@@ -266,16 +273,21 @@ public class Player : MonoBehaviour
             possibleAimDirections.Add(Vector3.down + Vector3.right * unknown2AMMultiplier);
             possibleAimDirections.Add(Vector3.down);
             aimAnimationNb = GetAnimIndexFromAim(aimDirection, possibleAimDirections);
+            m_Animator.SetInteger("AimingDirection", (int)aimAnimationNb);
         }
 
         m_Rigidbody.isKinematic = false;
-
+        m_Animator.SetBool("Aiming", false);
     }
 
     private float GetAnimIndexFromAim(Vector3 iDirection, List<Vector3> iOthers)
     {
         float lowestAngle = 360;
-        int animNb = 0;
+        int animNb = 2;
+        if(iDirection == Vector3.zero){
+            return 2;
+        }
+
         for(int i = 0; i < iOthers.Count; i++)
         {
             if(Vector3.Angle(iDirection, iOthers[i].normalized) < lowestAngle)
@@ -296,6 +308,7 @@ public class Player : MonoBehaviour
             {
                 if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0 && m_CanDashAgain)
                 {
+                    source.PlayOneShot(dashSound[Random.Range(0, dashSound.Length)], 1.0f);
                     StartCoroutine(DashCoroutine(iInputValue));
                     StartCoroutine(DashCooldownCoroutine());
                 }
@@ -347,7 +360,6 @@ public class Player : MonoBehaviour
 
         Vector3 startVelocity = m_Rigidbody.velocity;
         Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection * 1.5f).normalized;
-        Debug.Log(direction);
         if(direction == Vector3.zero)
         {
             direction = (-iInputValue * Vector3.right).normalized;
@@ -502,25 +514,34 @@ public class Player : MonoBehaviour
             GiveJump();
             
         }
-         if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
+
+         if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow")))
+        {
             bool isInFrontOfArrow = false;
             Vector3 arrowDirection = collision.gameObject.GetComponent<Arrow>().direction;
+            Rigidbody arrowRb = collision.gameObject.GetComponent<Rigidbody>();
             Vector3 arrowPos = collision.transform.position;
             Vector3 arrowToPlayerDirection = transform.position - collision.transform.position;
-            isInFrontOfArrow = Vector3.Dot(arrowDirection, arrowToPlayerDirection) >= 0;                          
+            isInFrontOfArrow = Vector3.Dot(arrowRb.velocity.normalized, arrowToPlayerDirection.normalized) > 0;
 
-            if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
+            Debug.Log(isInFrontOfArrow);
+
+            if(arrowRb.isKinematic)
+            {
+                source.PlayOneShot(pickupSound[Random.Range(0, pickupSound.Length)], 1.0f);
                 m_Quiver.Enqueue(true);
                 Destroy(collision.gameObject);
             }
             else{
                 if (m_IsDashing) {
                     StartCoroutine(SlowMoCatchArrow());
+                    source.PlayOneShot(pickupSound[Random.Range(0, pickupSound.Length)], 1.0f);
                     m_Quiver.Enqueue(true);
                     Destroy(collision.gameObject);
                 }
                 else if(isInFrontOfArrow)
                 {
+                    Destroy(collision.gameObject);
                     Death();
                 }
             }
@@ -528,6 +549,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
         {
             collision.gameObject.GetComponent<Player>().Bump();
+            source.PlayOneShot(punchSound[Random.Range(0, punchSound.Length)], 0.7f);
             DeathFromAbove(collision.gameObject);
         }
     }
@@ -560,8 +582,9 @@ public class Player : MonoBehaviour
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot(iFromPlayer.transform.position - transform.position, transform.up) > 0.75f)
+        if (Vector3.Dot((iFromPlayer.transform.position - transform.position).normalized, transform.up) > 0.75f)
         {
+            source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
             Death();
         }
     }
@@ -588,7 +611,8 @@ public class Player : MonoBehaviour
     }
 
     private void Death()
-    {        
+    {
+        source.PlayOneShot(deathSound[Random.Range(0, deathSound.Length)], 1.0f);
         this.enabled = false;
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)
@@ -606,6 +630,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(respawnTimer);
         
         this.enabled = true;
+        m_Quiver.Enqueue(true);        
         
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)

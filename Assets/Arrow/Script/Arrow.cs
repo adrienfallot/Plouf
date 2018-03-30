@@ -9,6 +9,15 @@ public class Arrow : MonoBehaviour {
     public float lowJumpMultiplier = 1f;
     public Vector3 direction = Vector3.zero;
 
+	public AudioClip[] arrowImpactSound = null;
+
+	private AudioSource source = null;
+
+	void Awake()
+	{
+		source = GetComponent<AudioSource>();
+	}
+
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
@@ -45,6 +54,8 @@ public class Arrow : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision){
 		if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arena"))){
+			//source.PlayOneShot(arrowImpactSound[Random.Range(0, arrowImpactSound.Length)], 0.5f);
+			Debug.Log ("BURURH");
 			rb.isKinematic = true;
 		}
 	}
@@ -52,7 +63,7 @@ public class Arrow : MonoBehaviour {
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
-        {
+		{
             rb.isKinematic = true;
         }
     }
