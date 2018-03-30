@@ -542,11 +542,11 @@ public class Player : MonoBehaviour
 
     private IEnumerator SlowMoCatchArrow()
     {
-        m_KeepInAir = true;
+        //m_KeepInAir = true;
 
         yield return new WaitForSeconds(.2f);
 
-        m_KeepInAir = false;
+        //m_KeepInAir = false;
     }
 
     private void OnCollisionStay(Collision collision)
