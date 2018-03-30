@@ -1183,5 +1183,12 @@ MonoBehaviour:
   fallMultiplier: 5.68
   lowJumpMultiplier: 3.31
   floattingTimeAfterGrip: 0.075
+  dashCooldown: 1
+  arrowSpeed: 10
+  arrowOffset: 2
+  arrowDisplayTime: 0.2
+  arrow: {fileID: 54020546206725422, guid: 8e818aa68a31a9d4e84462299a90c73f, type: 2}
+  numberOfArrowAtBeginning: 4
   respawnTimer: 1
+  bumpFromDeathFromAbove: 5
   m_Animator: {fileID: 95136736445297112}
