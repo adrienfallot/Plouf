@@ -15,7 +15,10 @@ public class Player : MonoBehaviour
     public float arrowOffset = 2f;
     public float arrowDisplayTime = 0.2f;
     public Rigidbody arrow;
+    public int numberOfArrowAtBeginning = 4;
     public float respawnTimer = 1f;
+
+    public float bumpFromDeathFromAbove = 5f;
 
     public Animator m_Animator = null;
 
@@ -32,8 +35,11 @@ public class Player : MonoBehaviour
     private int         m_AvailableJumps = 1;
     private int         m_availableDashs = 1;
     private bool        m_FacingRight = true;
+    private bool        m_IsInAir = false;
+    private bool        m_CanDashAgain = false;
     private float       m_Dot = 0;
     private List<Transform> m_currentColliders = new List<Transform>();
+    private Queue<bool> m_Quiver = new Queue<bool>();
 
     private void Start()
     {
@@ -41,13 +47,32 @@ public class Player : MonoBehaviour
         m_DistToGround = GetComponent<Collider>().bounds.extents.y;
         m_DistToSide = GetComponent<Collider>().bounds.extents.x;
         m_Rigidbody = GetComponent<Rigidbody>();
+        for(int i=0; i < numberOfArrowAtBeginning;i++){
+            m_Quiver.Enqueue(true);
+        }
     }
 
     private void FixedUpdate()
     {
+        m_IsInAir = IsInAir();
+
+        if(m_IsInAir)
+        {
+            if(!m_IsDraggedDown)
+            {
+                StartCoroutine(DragDownCoroutine());
+            }
+        }
+
+        //clamp vitesse
+        if (m_Rigidbody.velocity.y < -50)
+        {
+            m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, -50, m_Rigidbody.velocity.z);
+        }
+        
         if (!m_KeepInAir)
         { 
-            if (m_Rigidbody.velocity.y != 0 && !m_IsDraggedDown)
+            if (m_IsInAir && !m_IsDraggedDown)
             {
                 StartCoroutine(DragDownCoroutine());
             }
@@ -58,62 +83,75 @@ public class Player : MonoBehaviour
             {
                 m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
             }
-            
         }
         
     }
 
     public void MoveHorizontal(float iInputValue)
     {
-        if(!m_IsDashing)
+        if (!m_IsDashing)
         {
             //on ne se déplace que si on n'est pas collé à un mur.
             m_HorizontalDirection = iInputValue * Vector3.right * Time.deltaTime;
             if (!HasGripOnWall(m_HorizontalDirection))
             {
+                //m_Rigidbody.velocity += m_HorizontalDirection * speed;
                 transform.Translate(m_HorizontalDirection * speed);
             }
-            else if(!m_IsGrippingWall)
+            else if (!m_IsGrippingWall)
             {
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
             }
-        }
-        if(iInputValue > 0 && !m_FacingRight){
-            print("droite");
-            Flip();
-        }
-        else if(iInputValue < 0 && m_FacingRight){
-            print("gauche");
-            Flip();
+
+            CheckPlayerOrientation(iInputValue);
         }
             
     }
 
-    public void MoveRight(float iInputValue)
+    private void CheckPlayerOrientation(float iInputValue)
     {
-        //m_VerticalDirection = iInputValue * transform.right * Time.deltaTime;
-        //transform.Translate(m_VerticalDirection * speed);
-        if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0)
+        if (iInputValue > 0 && !m_FacingRight)
         {
-            StartCoroutine(DashCoroutine());
-            StartCoroutine(DashCooldownCoroutine());
+            Flip();
+        }
+        else if (iInputValue < 0 && m_FacingRight)
+        {
+            Flip();
         }
     }
 
-    public void Fire()
+    public void MoveVertical(float iInputValue)
     {
-         if(m_FacingRight)
+        m_VerticalDirection = iInputValue * Vector3.up;
+    }
+
+    public void Fire()
+    {   if(m_Quiver.Count > 0){
+            Rigidbody arrowInstance;
+            if (m_HorizontalDirection + m_VerticalDirection == Vector3.zero)
             {
-                // ... instantiate the rocket facing right and set it's velocity to the right. 
-                Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody;
-                bulletInstance.velocity = new Vector3(arrowSpeed, 0, 0);
+                if (m_FacingRight)
+                {
+                    arrowInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+                    arrowInstance.velocity = new Vector3(arrowSpeed, 0, 0);
+                }
+                else
+                {
+                    arrowInstance = Instantiate(arrow, new Vector3(transform.position.x - arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+                    arrowInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+                }
             }
             else
             {
-                // Otherwise instantiate the rocket facing left and set it's velocity to the left.
-                Rigidbody bulletInstance = Instantiate(arrow, new Vector3(transform.position.x-arrowOffset,transform.position.y,transform.position.z), Quaternion.Euler(new Vector3(0,0,180f))) as Rigidbody;
-                bulletInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+                Vector3 vel = arrowSpeed * (m_HorizontalDirection.normalized + m_VerticalDirection);
+                arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized*arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
+                arrowInstance.velocity = vel;
             }
+            m_Quiver.Dequeue();
+        }
+        else{
+            print("not enough arrow");
+        }
     }
 
     public void Jump()
@@ -122,10 +160,20 @@ public class Player : MonoBehaviour
         {
             if (m_AvailableJumps > 0)
             {
-                
-                Vector3 direction = m_VerticalDirection + m_HorizontalDirection + Vector3.up;
-                m_Rigidbody.velocity = (direction * jumpMultiplier);
 
+                Vector3 direction;
+
+                if (!HasGripOnWall(m_HorizontalDirection))
+                {
+                    direction = (m_VerticalDirection + m_HorizontalDirection.normalized + Vector3.up).normalized;
+                }
+                else
+                {
+                    direction = Vector3.up;
+                }
+                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+                m_Rigidbody.velocity = (direction * jumpMultiplier);
+                                
                 //si on a la place de sauter, on le dépense ce saut de merde.
                 if (!Physics.Raycast(transform.position, Vector3.up, m_DistToSide + .01f))
                 {
@@ -136,9 +184,28 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Dash()
+    public void Dash(float iInputValue)
     {
-        
+        if (iInputValue != 0)
+        {
+            //if (!HasGripOnWall(m_Rigidbody.velocity))
+            {
+                if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0 && m_CanDashAgain)
+                {
+                    StartCoroutine(DashCoroutine(iInputValue));
+                    StartCoroutine(DashCooldownCoroutine());
+                }
+            }
+            m_CanDashAgain = false;
+            /*else if (!m_IsGrippingWall)
+            {
+                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_Rigidbody.velocity)));
+            }*/
+        }
+        else
+        {
+            m_CanDashAgain = true;
+        }
     }
 
     private void SpendJump()
@@ -161,27 +228,29 @@ public class Player : MonoBehaviour
         m_availableDashs = (int)Mathf.Clamp01(m_availableDashs + 1);
     }
 
-    private IEnumerator DashCoroutine()
+    private IEnumerator DashCoroutine(float iInputValue)
     {
         m_IsDashing = true;
-        //m_Rigidbody.isKinematic = true;
         m_Rigidbody.useGravity = false;
         GiveJump();
         SpendDash();
+
         Vector3 startVelocity = m_Rigidbody.velocity;
-        Vector3 direction = (m_FacingRight) ? Vector3.right : -Vector3.right;
-        //yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 1.5f, .05f));
-        //yield return StartCoroutine(MoveToPosition(transform.position + transform.right * 3.5f, .1f));
-        yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 50f, startVelocity + direction * 30f, .05f));
-        yield return StartCoroutine(LerpVelocityTo(startVelocity + direction * 30f, startVelocity + direction * 0f, .1f));
-        //yield return StartCoroutine(LerpVelocityTo(transform.position + transform.right * 3.5f, .1f));
-
-        //m_Rigidbody.AddForce(transform.forward * 10);
-        //yield return new WaitForSeconds(.5f);
-
+        Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection * 1.5f).normalized;
+        Debug.Log(direction);
+        if(direction == Vector3.zero)
+        {
+            direction = (-iInputValue * Vector3.right).normalized;
+            CheckPlayerOrientation(iInputValue);
+        }
+        
+        m_Rigidbody.velocity = direction * 30;
+        yield return new WaitForSeconds(.1f);
+        m_Rigidbody.velocity = direction * 18f;
+        yield return new WaitForSeconds(.075f);
+        m_Rigidbody.velocity = Vector3.zero;
 
         m_IsDashing = false;
-        //m_Rigidbody.isKinematic = false;
         m_Rigidbody.useGravity = true;
     }
 
@@ -197,8 +266,8 @@ public class Player : MonoBehaviour
         Vector3 startingPos = iStartVelocity;
         while (elapsedTime < iTime)
         {
-            m_Rigidbody.velocity = Vector3.Lerp(new Vector3(iStartVelocity.x, 0, iStartVelocity.z),
-                                                new Vector3(iNewVelocity.x, 0, iNewVelocity.z),
+            m_Rigidbody.velocity = Vector3.Lerp(iStartVelocity,
+                                                iNewVelocity,
                                                 (elapsedTime / iTime));
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -231,18 +300,23 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
-        if(isGoingRight)
-        {
-            bool hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
 
-            return hasRightGrip;
+        bool hasRightGrip = false;
+        bool hasLeftGrip = false;
+        if (isGoingRight)
+        {
+            hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
+
+            //return hasRightGrip;
         }
         else
         {
-            bool hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
+            hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
 
-            return hasLeftGrip;
+            //return hasLeftGrip;
         }
+
+        return (isGoingRight) ? hasRightGrip : hasLeftGrip;
         
     }
 
@@ -251,7 +325,7 @@ public class Player : MonoBehaviour
         m_IsDraggedDown = true;
         Vector3 dragVector = Vector3.zero;
 
-        while (m_ShouldBeDragged)
+        while (m_IsInAir)
         {
             if(!m_Rigidbody.useGravity)
             {
@@ -270,17 +344,11 @@ public class Player : MonoBehaviour
                 dragVector = Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
             }
 
-            if(m_Rigidbody.velocity.y >= 50)
-            {
-                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 50, m_Rigidbody.velocity.z);
-            }
-            else
-            {
-                m_Rigidbody.velocity += dragVector;
-            }
+            m_Rigidbody.velocity += dragVector;
         }
 
         m_IsDraggedDown = false;
+        GiveJump();
     }
 
     private IEnumerator GrippingWallCoroutine(Vector3 iGrippingDirection)
@@ -317,37 +385,56 @@ public class Player : MonoBehaviour
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
             if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
+                m_Quiver.Enqueue(true);
+                Destroy(collision.gameObject);
             }
             else{
-                Death();
-                Destroy(collision.gameObject, arrowDisplayTime);
+                if (m_IsDashing) {
+                    m_Quiver.Enqueue(true);
+                    Destroy(collision.gameObject);
+                }
+                else
+                {
+                    Death();
+                }
             }
         }
-
-    }
-
-    private void CheckIfIsGrabbingWall()
-    {
-        if (m_Dot > .75f || m_Dot < -.75f)
+        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
         {
-            if (!m_IsGrippingWall)
-            {
-                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
-            }
+            DeathFromAbove(collision.gameObject);
         }
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.collider.CompareTag("SolidEnvironment"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
         {
             m_ShouldBeDragged = false;
         }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
+        {
+            DeathFromAbove(collision.gameObject);
+        }
+    }
+
+    private void DeathFromAbove(GameObject iFromPlayer)
+    {
+        Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
+        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.5f)
+        {
+            Death();
+        }
+        iFromPlayer.GetComponent<Player>().DeathFromAboveBump();
+    }
+
+    public void DeathFromAboveBump()
+    {
+        m_Rigidbody.velocity += Vector3.up * bumpFromDeathFromAbove;
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.collider.CompareTag("SolidEnvironment"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
         {
             m_ShouldBeDragged = true;
         }

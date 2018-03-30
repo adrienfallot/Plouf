@@ -152,10 +152,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 1022393148959988, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
-      propertyPath: m_Name
-      value: Mesh
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
   m_IsPrefabParent: 0
@@ -314,12 +310,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &675722777 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
-    type: 2}
-  m_PrefabInternal: {fileID: 1377047902}
-  m_Script: {fileID: 11500000, guid: 6b5ee7b5bdda20046b0534da9b6c9edc, type: 3}
 --- !u!1 &677803776
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,10 +516,6 @@ Prefab:
       propertyPath: m_Name
       value: Player 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1022393148959988, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
-      propertyPath: m_Name
-      value: Mesh
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046ad263d40ef0944b8d2279a36f26d9, type: 2}
   m_IsPrefabParent: 0
@@ -706,4 +692,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a78152c5fc0c953438d6e9081ff785f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_mapGenerator: {fileID: 675722777}
+  m_mapGenerator: {fileID: 182344166}

@@ -5,6 +5,9 @@ using UnityEngine;
 public class Arrow : MonoBehaviour {
 
 	public Rigidbody rb;
+    public float fallMultiplier = 0.68f;
+    public float lowJumpMultiplier = 1f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -14,18 +17,43 @@ public class Arrow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (rb != null) {
-			if (rb.velocity != Vector3.zero) {
-				Vector3 vel = rb.velocity;
-				float angleZ = Mathf.Atan2(vel.y,vel.x)*Mathf.Rad2Deg;
+			if (rb.velocity != Vector3.zero)
+            {
+                transform.eulerAngles = GetRotationFromVelocity(rb.velocity);
+            }
 
-				transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,angleZ);
-			}
-		}
-	}
+            Vector3 dragVector = Vector3.zero;
+            if (rb.velocity.y < 0)
+            {
+                dragVector = Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            }
+            //tweak de la décélération en montée
+            else if (rb.velocity.y > 0)
+            {
+                dragVector = Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            }
+            rb.velocity += dragVector;
+        }
+    }
+
+    public static Vector3 GetRotationFromVelocity(Vector3 velocity)
+    {
+        float angleZ = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+
+        return new Vector3(0, 0, angleZ);
+    }
 
 	void OnCollisionEnter(Collision collision){
 		if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arena"))){
 			rb.isKinematic = true;
 		}
 	}
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
+        {
+            rb.isKinematic = true;
+        }
+    }
 }
