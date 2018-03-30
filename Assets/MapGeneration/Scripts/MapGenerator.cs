@@ -14,8 +14,10 @@ public class MapGenerator : MonoBehaviour
 {
     public GameObject debugTile = null;
     public GameObject blackTile = null;
+    public GameObject groundTile = null;
 	public GameObject whiteTile = null;
-	public int NUMBER_OF_ROW = 24;
+    public GameObject spikeTile = null;
+    public int NUMBER_OF_ROW = 24;
 	public int NUMBER_OF_COLUMN = 13;
 	public int BASE_NUMBER_OF_PLATE_PER_GROUND = 2;
 	public int MAX_LENGTH_OF_PLATE = 5;
@@ -27,6 +29,8 @@ public class MapGenerator : MonoBehaviour
     public int MIN_SOLID_BLOCK_PER_MAP_INTERIOR = 12;
     public float solidOverPathable = 0.03f;
     public const int NUMBER_OF_PLAYER = 4;
+    public int MAX_SPIKE = 4;
+    public float PROBABILITY_OF_SPIKE = 0.1f;
     public GameObject[] Players = new GameObject[4];
     int[][] cellValues = null;
     int[][] spawns = null;
@@ -883,12 +887,27 @@ public class MapGenerator : MonoBehaviour
     }
 
 	void InstanciateMap(){
+        int numberOfSpike = 0;
 		for (int i = 0; i < NUMBER_OF_ROW; i++) {
 			for (int j = 0; j < NUMBER_OF_COLUMN; j++) {
-                if (cellValues[i][j] == 1)
+                if(i > 3 && numberOfSpike < MAX_SPIKE && cellValues[i-2][j] == 0 && cellValues[i-1][j] == 0 && cellValues[i][j] == 1 && Random.Range(0.0f, 1.0f) < PROBABILITY_OF_SPIKE)
                 {
-                    GameObject.Instantiate(blackTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
-                    GameObject.Instantiate(blackTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    GameObject.Instantiate(spikeTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    GameObject.Instantiate(spikeTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    numberOfSpike++;
+                }
+                else if (cellValues[i][j] == 1)
+                {
+                    if (i > 1 && cellValues[i-1][j] == 0)
+                    {
+                        GameObject.Instantiate(groundTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
+                        GameObject.Instantiate(groundTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    }
+                    else
+                    {
+                        GameObject.Instantiate(blackTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
+                        GameObject.Instantiate(blackTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
+                    }
                 }
                 else if (cellValues[i][j] == 2)
                 {
