@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
 
                 m_Animator.SetBool("Walking", (m_HorizontalDirection * speed) != Vector3.zero);
             }
-            else if (!m_IsGrippingWall && !m_IsAiming)
+            else if (!m_IsGrippingWall && !m_IsAiming && m_Rigidbody.velocity.y < 0)
             {
                 m_Animator.SetBool("Walking", false);
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
@@ -231,7 +231,6 @@ public class Player : MonoBehaviour
             possibleAimDirections.Add(Vector3.down + Vector3.right * unknown2AMMultiplier);
             possibleAimDirections.Add(Vector3.down);
             aimAnimationNb = GetAnimIndexFromAim(aimDirection, possibleAimDirections);
-            Debug.Log(aimAnimationNb);
         }
     }
 
@@ -360,19 +359,36 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
+        RaycastHit hit;
+
         bool hasRightGrip = false;
         bool hasLeftGrip = false;
         if (isGoingRight)
         {
-            hasRightGrip = Physics.Raycast(transform.position, Vector3.right, m_DistToSide + .01f);
-
-            //return hasRightGrip;
+            if (Physics.Raycast(transform.position, Vector3.right, out hit))
+            {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                {
+                    if (hit.distance < m_DistToSide + .01f)
+                    {
+                        hasRightGrip = true;
+                    }
+                }
+            }
         }
         else
         {
-            hasLeftGrip = Physics.Raycast(transform.position, -Vector3.right, m_DistToSide + .01f);
-
-            //return hasLeftGrip;
+            if(Physics.Raycast(transform.position, Vector3.left, out hit))
+            {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                {
+                    if (hit.distance < m_DistToSide + .01f)
+                    {
+                        hasLeftGrip = true;
+                    }
+                }
+            }
+            
         }
 
         return (isGoingRight) ? hasRightGrip : hasLeftGrip;
@@ -443,16 +459,22 @@ public class Player : MonoBehaviour
             
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
-            if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
+            Rigidbody arrowRb = collision.gameObject.GetComponent<Rigidbody>();
+            bool isInFrontOfArrow = false;
+            isInFrontOfArrow = Vector3.Dot(arrowRb.velocity, m_Rigidbody.velocity) < 0;
+                                                        
+
+            if(arrowRb.isKinematic){
                 m_Quiver.Enqueue(true);
                 Destroy(collision.gameObject);
             }
             else{
                 if (m_IsDashing) {
+                    StartCoroutine(SlowMoCatchArrow());
                     m_Quiver.Enqueue(true);
                     Destroy(collision.gameObject);
                 }
-                else
+                else if(isInFrontOfArrow)
                 {
                     Death();
                 }
@@ -462,6 +484,15 @@ public class Player : MonoBehaviour
         {
             DeathFromAbove(collision.gameObject);
         }
+    }
+
+    private IEnumerator SlowMoCatchArrow()
+    {
+        m_KeepInAir = true;
+
+        yield return new WaitForSeconds(.2f);
+
+        m_KeepInAir = false;
     }
 
     private void OnCollisionStay(Collision collision)
@@ -475,7 +506,7 @@ public class Player : MonoBehaviour
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.5f)
+        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.75f)
         {
             Death();
         }
