@@ -7,7 +7,7 @@ public class Arrow : MonoBehaviour {
 	public Rigidbody rb;
     public float fallMultiplier = 0.68f;
     public float lowJumpMultiplier = 1f;
-
+    public Vector3 direction = Vector3.zero;
 
 	// Use this for initialization
 	void Start () {

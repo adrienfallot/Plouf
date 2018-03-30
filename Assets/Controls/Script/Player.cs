@@ -158,11 +158,13 @@ public class Player : MonoBehaviour
                 if (m_FacingRight)
                 {
                     arrowInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+                    arrowInstance.GetComponent<Arrow>().direction = Vector3.right;
                     arrowInstance.velocity = new Vector3(arrowSpeed, 0, 0);
                 }
                 else
                 {
                     arrowInstance = Instantiate(arrow, new Vector3(transform.position.x - arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+                    arrowInstance.GetComponent<Arrow>().direction = Vector3.left;
                     arrowInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
                 }
             }
@@ -501,12 +503,13 @@ public class Player : MonoBehaviour
             
         }
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow"))){
-            Rigidbody arrowRb = collision.gameObject.GetComponent<Rigidbody>();
             bool isInFrontOfArrow = false;
-            isInFrontOfArrow = Vector3.Dot(arrowRb.velocity, transform.position - arrowRb.transform.position) > 0;
-                                                        
+            Vector3 arrowDirection = collision.gameObject.GetComponent<Arrow>().direction;
+            Vector3 arrowPos = collision.transform.position;
+            Vector3 arrowToPlayerDirection = transform.position - collision.transform.position;
+            isInFrontOfArrow = Vector3.Dot(arrowDirection, arrowToPlayerDirection) >= 0;                          
 
-            if(arrowRb.isKinematic){
+            if(collision.gameObject.GetComponent<Rigidbody>().isKinematic){
                 m_Quiver.Enqueue(true);
                 Destroy(collision.gameObject);
             }
@@ -526,6 +529,14 @@ public class Player : MonoBehaviour
         {
             collision.gameObject.GetComponent<Player>().Bump();
             DeathFromAbove(collision.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer.Equals(LayerMask.NameToLayer("arrow")))
+        {
+            Debug.Log("trigger with arrow");
         }
     }
 
