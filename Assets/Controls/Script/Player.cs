@@ -38,8 +38,7 @@ public class Player : MonoBehaviour
     private bool        m_IsInAir = false;
     private bool        m_IsCloseEnoughToWall = false;
     private bool        m_CanDashAgain = false;
-    private float       m_Dot = 0;
-    private List<Transform> m_currentColliders = new List<Transform>();
+    private bool        m_IsAiming = false;
     private Queue<bool> m_Quiver = new Queue<bool>();
 
     private void Start()
@@ -71,6 +70,11 @@ public class Player : MonoBehaviour
             }
         }
 
+        if(m_IsAiming)
+        {
+            m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+        }
+
         //clamp vitesse
         if (m_Rigidbody.velocity.y < -50)
         {
@@ -91,7 +95,6 @@ public class Player : MonoBehaviour
                 m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
             }
         }
-        
     }
 
     public void MoveHorizontal(float iInputValue)
@@ -100,14 +103,14 @@ public class Player : MonoBehaviour
         {
             //on ne se déplace que si on n'est pas collé à un mur.
             m_HorizontalDirection = iInputValue * Vector3.right * Time.deltaTime;
-            if (!HasGripOnWall(m_HorizontalDirection))
+            if (!HasGripOnWall(m_HorizontalDirection) && !m_IsAiming)
             {
                 //m_Rigidbody.velocity += m_HorizontalDirection * speed;
                 transform.Translate(m_HorizontalDirection * speed);
 
                 m_Animator.SetBool("Walking", (m_HorizontalDirection * speed) != Vector3.zero);
             }
-            else if (!m_IsGrippingWall)
+            else if (!m_IsGrippingWall && !m_IsAiming)
             {
                 m_Animator.SetBool("Walking", false);
                 StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_HorizontalDirection)));
@@ -136,7 +139,9 @@ public class Player : MonoBehaviour
     }
 
     public void Fire()
-    {   if(m_Quiver.Count > 0){
+    {
+        CancelAim();
+        if (m_Quiver.Count > 0){
             Rigidbody arrowInstance;
             if (m_HorizontalDirection + m_VerticalDirection == Vector3.zero)
             {
@@ -163,7 +168,7 @@ public class Player : MonoBehaviour
             print("not enough arrow");
         }
     }
-
+    
     public void Jump()
     {
         if (!m_IsDashing)
@@ -189,10 +194,61 @@ public class Player : MonoBehaviour
                 {
                     m_Animator.SetTrigger("Jump");
                     SpendJump();
+                    CancelAim();
                 }
 
             }
         }
+    }
+
+    public void Aim()
+    {
+        if(!m_IsAiming)
+        {
+            StartCoroutine(AimCouroutine());
+        }
+    }
+
+    private void CancelAim()
+    {
+        m_IsAiming = false;
+    }
+
+    private IEnumerator AimCouroutine()
+    {
+        m_IsAiming = true;
+        Vector3 aimDirection = Vector3.zero;
+        float aimAnimationNb = 0;
+        while (m_IsAiming)
+        {
+            yield return new WaitForEndOfFrame();
+            aimDirection = (m_HorizontalDirection.normalized + m_VerticalDirection.normalized).normalized;
+            List<Vector3> possibleAimDirections = new List<Vector3>();
+            float unknown2AMMultiplier = (m_FacingRight) ? 1 : -1;
+            possibleAimDirections.Add(Vector3.up);
+            possibleAimDirections.Add(Vector3.up + Vector3.right * unknown2AMMultiplier);
+            possibleAimDirections.Add(Vector3.right * unknown2AMMultiplier);
+            possibleAimDirections.Add(Vector3.down + Vector3.right * unknown2AMMultiplier);
+            possibleAimDirections.Add(Vector3.down);
+            aimAnimationNb = GetAnimIndexFromAim(aimDirection, possibleAimDirections);
+            Debug.Log(aimAnimationNb);
+        }
+    }
+
+    private float GetAnimIndexFromAim(Vector3 iDirection, List<Vector3> iOthers)
+    {
+        float lowestAngle = 360;
+        int animNb = 0;
+        for(int i = 0; i < iOthers.Count; i++)
+        {
+            if(Vector3.Angle(iDirection, iOthers[i].normalized) < lowestAngle)
+            {
+                lowestAngle = Vector3.Angle(iDirection, iOthers[i].normalized);
+                animNb = i;
+            }
+        }
+
+        return animNb;
     }
 
     public void Dash(float iInputValue)
@@ -285,18 +341,6 @@ public class Player : MonoBehaviour
             m_Rigidbody.velocity = Vector3.Lerp(iStartVelocity,
                                                 iNewVelocity,
                                                 (elapsedTime / iTime));
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    private IEnumerator MoveToPosition(Vector3 iNewPos, float iTime)
-    {
-        float elapsedTime = 0;
-        Vector3 startingPos = transform.position;
-        while (elapsedTime < iTime)
-        {
-            transform.position = Vector3.Lerp(startingPos, iNewPos, (elapsedTime / iTime));
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
@@ -425,10 +469,6 @@ public class Player : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
         {
             m_ShouldBeDragged = false;
-        }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
-        {
-            DeathFromAbove(collision.gameObject);
         }
     }
 
