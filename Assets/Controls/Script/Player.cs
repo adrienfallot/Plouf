@@ -54,6 +54,15 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(Input.GetAxis("Horizontal_P3") != 0){
+            Debug.Log("3");
+        }
+
+        if(Input.GetAxis("Horizontal_P4") != 0){
+            Debug.Log("4");
+        }
+
+
         m_IsCloseEnoughToWall = HasGripOnWall((m_FacingRight) ? transform.right : - transform.right);
         m_IsInAir = IsInAir();
 
