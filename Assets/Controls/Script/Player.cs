@@ -554,19 +554,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer.Equals(LayerMask.NameToLayer("arrow")))
-        {
-            Debug.Log("trigger with arrow");
-        }
-    }
-
     private IEnumerator SlowMoCatchArrow()
     {
-        //m_KeepInAir = true;
+        //m_Rigidbody.;
 
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(2f);
 
         //m_KeepInAir = false;
     }
@@ -582,7 +574,7 @@ public class Player : MonoBehaviour
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot((iFromPlayer.transform.position - transform.position).normalized, transform.up) > 0.75f)
+        if (Vector3.Dot((iFromPlayer.transform.position - transform.position).normalized, transform.up) >= .85f)
         {
             source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
             Death();
