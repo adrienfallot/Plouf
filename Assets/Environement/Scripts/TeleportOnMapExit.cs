@@ -12,7 +12,6 @@ public class TeleportOnMapExit : MonoBehaviour {
 		m_bounds = GetComponent<Collider>().bounds;
 	}
 
-
 	void OnTriggerExit(Collider other) 
 	{
 		Vector3 otherPosition = other.transform.position;
