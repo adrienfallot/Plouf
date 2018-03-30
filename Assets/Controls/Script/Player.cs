@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     public int numberOfArrowAtBeginning = 4;
     public float respawnTimer = 1f;
 
-    public float bumpFromDeathFromAbove = 5f;
+    public float bumpFromCollision = 5f;
 
     public Animator m_Animator = null;
 
@@ -484,6 +484,7 @@ public class Player : MonoBehaviour
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
         {
+            collision.gameObject.GetComponent<Player>().Bump();
             DeathFromAbove(collision.gameObject);
         }
     }
@@ -508,16 +509,15 @@ public class Player : MonoBehaviour
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot(rb.velocity.normalized, transform.up) > 0.75f)
+        if (Vector3.Dot(iFromPlayer.transform.position - transform.position, transform.up) > 0.75f)
         {
             Death();
         }
-        iFromPlayer.GetComponent<Player>().DeathFromAboveBump();
     }
 
-    public void DeathFromAboveBump()
+    public void Bump()
     {
-        m_Rigidbody.velocity += Vector3.up * bumpFromDeathFromAbove;
+        m_Rigidbody.velocity += Vector3.up * bumpFromCollision;
     }
 
     private void OnCollisionExit(Collision collision)
