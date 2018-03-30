@@ -520,6 +520,14 @@ public class MapGenerator : MonoBehaviour
                     return false;
                 }
             }
+            if (player.transform.position.x < 1)
+            {
+                player.transform.position = new Vector3(1, player.transform.position.y, player.transform.position.z);
+            }
+            if (player.transform.position.y > -1)
+            {
+                player.transform.position = new Vector3(player.transform.position.x, -1, player.transform.position.z);
+            }
         }
         return true;
     }
