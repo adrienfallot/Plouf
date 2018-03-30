@@ -203,7 +203,7 @@ public class Player : MonoBehaviour
 
     public void Aim()
     {
-        if(!m_IsAiming)
+        if(!m_IsAiming && (m_Quiver.Count != 0))
         {
             StartCoroutine(AimCouroutine());
         }
@@ -216,9 +216,10 @@ public class Player : MonoBehaviour
 
     private IEnumerator AimCouroutine()
     {
+        m_Animator.SetBool("Aiming", true);
         m_IsAiming = true;
         Vector3 aimDirection = Vector3.zero;
-        float aimAnimationNb = 0;
+        float aimAnimationNb = 2;
         while (m_IsAiming)
         {
             yield return new WaitForEndOfFrame();
@@ -231,13 +232,19 @@ public class Player : MonoBehaviour
             possibleAimDirections.Add(Vector3.down + Vector3.right * unknown2AMMultiplier);
             possibleAimDirections.Add(Vector3.down);
             aimAnimationNb = GetAnimIndexFromAim(aimDirection, possibleAimDirections);
+            m_Animator.SetInteger("AimingDirection", (int)aimAnimationNb);
         }
+        m_Animator.SetBool("Aiming", false);
     }
 
     private float GetAnimIndexFromAim(Vector3 iDirection, List<Vector3> iOthers)
     {
         float lowestAngle = 360;
-        int animNb = 0;
+        int animNb = 2;
+        if(iDirection == Vector3.zero){
+            return 2;
+        }
+
         for(int i = 0; i < iOthers.Count; i++)
         {
             if(Vector3.Angle(iDirection, iOthers[i].normalized) < lowestAngle)
@@ -306,7 +313,6 @@ public class Player : MonoBehaviour
 
         Vector3 startVelocity = m_Rigidbody.velocity;
         Vector3 direction = (m_HorizontalDirection.normalized + m_VerticalDirection * 1.5f).normalized;
-        Debug.Log(direction);
         if(direction == Vector3.zero)
         {
             direction = (-iInputValue * Vector3.right).normalized;
