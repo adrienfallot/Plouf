@@ -178,15 +178,8 @@ public class Player : MonoBehaviour
 
                 Vector3 direction;
 
-                if (!HasGripOnWall(m_HorizontalDirection))
-                {
-                    direction = (m_VerticalDirection + m_HorizontalDirection.normalized + Vector3.up).normalized;
-                }
-                else
-                {
-                    direction = Vector3.up;
-                }
-                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, 0, m_Rigidbody.velocity.z);
+                direction = Vector3.up;
+                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, Mathf.Max(0, m_Rigidbody.velocity.y), m_Rigidbody.velocity.z);
                 m_Rigidbody.velocity = (direction * jumpMultiplier);
                                 
                 //si on a la place de sauter, on le dépense ce saut de merde.
