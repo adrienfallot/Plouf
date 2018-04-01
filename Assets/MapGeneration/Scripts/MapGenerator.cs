@@ -32,7 +32,7 @@ public class MapGenerator : MonoBehaviour
     public int MAX_SPIKE = 4;
     public float PROBABILITY_OF_SPIKE = 0.1f;
     public GameObject[] Players = new GameObject[4];
-    int[][] cellValues = null;
+    public int[][] cellValues = null;
     int[][] spawns = null;
     public bool testDebug = false;
 
@@ -899,7 +899,7 @@ public class MapGenerator : MonoBehaviour
         return getSliceOfArray(secondHandCandidates, 0, k);
     }
 
-	void InstanciateMap(int z_offset = 0){
+	public void InstanciateMap(int z_offset = 0){
         int numberOfSpike = 0;
 		for (int i = 0; i < NUMBER_OF_ROW; i++) {
 			for (int j = 0; j < NUMBER_OF_COLUMN; j++) {
