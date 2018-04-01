@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     private Vector3     m_VerticalDirection = Vector3.zero;
     private float       m_DistToGround = 0f;
     private float       m_DistToSide = 0f;
+    private bool        m_IsBeingKickedOutOfMap = false;
     private bool        m_ShouldBeDragged = false;
     private bool        m_IsGrippingWall = false;
     private bool        m_IsDraggedDown = false;
@@ -88,7 +89,7 @@ public class Player : MonoBehaviour
         bool isFalling = (m_Rigidbody.velocity.y < 0 ? m_IsInAir : false);
 
         m_Animator.SetBool("Falling", isFalling);
-        m_Animator.SetBool("GrabingWall", m_IsGrippingWall || m_IsCloseEnoughToWall);
+        m_Animator.SetBool("GrabingWall", m_IsGrippingWall || m_IsCloseEnoughToWall || m_IsBeingKickedOutOfMap);
 
         if(m_IsInAir)
         {
@@ -122,7 +123,7 @@ public class Player : MonoBehaviour
 
     public void MoveHorizontal(float iInputValue)
     {
-        if (!m_IsDashing)
+        if (!m_IsBeingKickedOutOfMap && !m_IsDashing)
         {
             //on ne se déplace que si on n'est pas collé à un mur.
             m_HorizontalDirection = iInputValue * Vector3.right * Time.deltaTime;
@@ -163,42 +164,47 @@ public class Player : MonoBehaviour
 
     public void Fire()
     {
-        CancelAim();
-        if (m_Quiver.Count > 0){
-            Rigidbody arrowInstance;
-            if (m_HorizontalDirection + m_VerticalDirection == Vector3.zero)
+        if(!m_IsBeingKickedOutOfMap)
+        {
+
+            CancelAim();
+            if (m_Quiver.Count > 0)
             {
-                if (m_FacingRight)
+                Rigidbody arrowInstance;
+                if (m_HorizontalDirection + m_VerticalDirection == Vector3.zero)
                 {
-                    arrowInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
-                    arrowInstance.GetComponent<Arrow>().direction = Vector3.right;
-                    arrowInstance.velocity = new Vector3(arrowSpeed, 0, 0);
-                    arrowInstance.GetComponent<Arrow>().setOwner(this);
+                    if (m_FacingRight)
+                    {
+                        arrowInstance = Instantiate(arrow, new Vector3(transform.position.x + arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+                        arrowInstance.GetComponent<Arrow>().direction = Vector3.right;
+                        arrowInstance.velocity = new Vector3(arrowSpeed, 0, 0);
+                        arrowInstance.GetComponent<Arrow>().setOwner(this);
+                    }
+                    else
+                    {
+                        arrowInstance = Instantiate(arrow, new Vector3(transform.position.x - arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
+                        arrowInstance.GetComponent<Arrow>().direction = Vector3.left;
+                        arrowInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+                        arrowInstance.GetComponent<Arrow>().setOwner(this);
+                    }
                 }
                 else
                 {
-                    arrowInstance = Instantiate(arrow, new Vector3(transform.position.x - arrowOffset, transform.position.y, transform.position.z), Quaternion.identity) as Rigidbody;
-                    arrowInstance.GetComponent<Arrow>().direction = Vector3.left;
-                    arrowInstance.velocity = new Vector3(-arrowSpeed, 0, 0);
+                    Vector3 vel = arrowSpeed * (m_HorizontalDirection.normalized + m_VerticalDirection);
+                    arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized * arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
+                    arrowInstance.velocity = vel;
                     arrowInstance.GetComponent<Arrow>().setOwner(this);
                 }
+                source.PlayOneShot(fireSound[Random.Range(0, fireSound.Length)], 1.0f);
+                m_Quiver.Dequeue();
+                updateQuiver();
             }
-            else
-            {
-                Vector3 vel = arrowSpeed * (m_HorizontalDirection.normalized + m_VerticalDirection);
-                arrowInstance = Instantiate(arrow, transform.position + (m_HorizontalDirection.normalized + m_VerticalDirection).normalized*arrowOffset, Quaternion.Euler(Arrow.GetRotationFromVelocity(vel))) as Rigidbody;
-                arrowInstance.velocity = vel;
-                arrowInstance.GetComponent<Arrow>().setOwner(this);
-            }
-            source.PlayOneShot(fireSound[Random.Range(0, fireSound.Length)], 1.0f);
-            m_Quiver.Dequeue();
-            updateQuiver();
         }
     }
     
     public void Jump()
     {
-        if (!m_IsDashing)
+        if (!m_IsBeingKickedOutOfMap && !m_IsDashing)
         {
             if (m_AvailableJumps > 0)
             {
@@ -236,7 +242,7 @@ public class Player : MonoBehaviour
 
     public void Aim()
     {
-        if(!m_IsAiming && (m_Quiver.Count != 0))
+        if(!m_IsBeingKickedOutOfMap && !m_IsAiming && (m_Quiver.Count != 0))
         {
             Vector3 startVelocity = (m_VerticalDirection.normalized + m_HorizontalDirection.normalized).normalized;
             StartCoroutine(AimCouroutine());
@@ -328,7 +334,7 @@ public class Player : MonoBehaviour
 
     public void Dash(float iInputValue)
     {
-        if (iInputValue != 0)
+        if (!m_IsBeingKickedOutOfMap && iInputValue != 0)
         {
             //if (!HasGripOnWall(m_Rigidbody.velocity))
             {
@@ -413,20 +419,6 @@ public class Player : MonoBehaviour
         GiveDash();
     }
 
-    private IEnumerator LerpVelocityTo(Vector3 iStartVelocity, Vector3 iNewVelocity, float iTime)
-    {
-        float elapsedTime = 0;
-        Vector3 startingPos = iStartVelocity;
-        while (elapsedTime < iTime)
-        {
-            m_Rigidbody.velocity = Vector3.Lerp(iStartVelocity,
-                                                iNewVelocity,
-                                                (elapsedTime / iTime));
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
     private bool IsInAir()
     {
         return !(IsGrounded() || m_IsGrippingWall);
@@ -457,6 +449,7 @@ public class Player : MonoBehaviour
         Debug.DrawRay(transform.position + upOffset, Vector3.right, Color.red);
         Debug.DrawRay(transform.position - upOffset, Vector3.left, Color.green);
         Debug.DrawRay(transform.position + upOffset, Vector3.left, Color.green);
+
         if (isGoingRight)
         {
             hitDown = Physics.Raycast(transform.position - upOffset, Vector3.right, out downHit);
@@ -464,7 +457,7 @@ public class Player : MonoBehaviour
 
             if (hitUp)
             {
-                if (upHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                if (upHit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
                 {
                     if (upHit.distance < m_DistToSide + sideThreshold)
                     {
@@ -474,7 +467,7 @@ public class Player : MonoBehaviour
             }
             if(hitDown)
             {
-                if (downHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                if (downHit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
                 {
                     if (downHit.distance < m_DistToSide + sideThreshold)
                     {
@@ -490,7 +483,7 @@ public class Player : MonoBehaviour
 
             if (hitUp)
             {
-                if (upHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                if (upHit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
                 {
                     if (upHit.distance < m_DistToSide + sideThreshold)
                     {
@@ -500,7 +493,7 @@ public class Player : MonoBehaviour
             }
             if (hitDown)
             {
-                if (downHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                if (downHit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
                 {
                     if (downHit.distance < m_DistToSide + sideThreshold)
                     {
@@ -576,13 +569,56 @@ public class Player : MonoBehaviour
         yield return StartCoroutine(DragDownCoroutine());
     }
 
+    private void UnlockZTranslation()
+    {
+        m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+    }
+
+    private void LockZTranslation()
+    {
+        m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+    }
+
+    private IEnumerator KickOutOfMap()
+    {
+        m_IsBeingKickedOutOfMap = true;
+        UnlockZTranslation();
+
+        while(m_IsBeingKickedOutOfMap)
+        {
+            m_Rigidbody.velocity += Vector3.back * 3;
+            yield return new WaitForEndOfFrame();
+        }
+
+        Kill();
+        LockZTranslation();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.layer.Equals(LayerMask.NameToLayer("bounds")))
+        {
+            m_IsBeingKickedOutOfMap = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
+        {
+            if(!m_IsBeingKickedOutOfMap)
+            {
+                StartCoroutine(KickOutOfMap());
+            }
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.collider.CompareTag("SolidEnvironment"))
         {
             m_ShouldBeDragged = false;
             GiveJump();
-            
         }
 
          if(collision.gameObject.layer.Equals(LayerMask.NameToLayer("arrow")))
@@ -614,7 +650,7 @@ public class Player : MonoBehaviour
                 else if(isInFrontOfArrow)
                 {
                     Destroy(collision.gameObject);
-                    Death();
+                    Kill();
                     m_Quiver.Enqueue(true);
                     updateQuiver();
                     if(arrowRb.gameObject.GetComponent<Arrow>().getOwner() == this)
@@ -631,7 +667,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("player"))
+        if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("player")))
         {
             collision.gameObject.GetComponent<Player>().Bump();
             source.PlayOneShot(punchSound[Random.Range(0, punchSound.Length)], 0.7f);
@@ -639,10 +675,26 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
+        {
+            m_ShouldBeDragged = false;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
+        {
+            m_ShouldBeDragged = true;
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Spike")){
-            Death();
+            Kill();
             Score--;
             foreach (Score s in Canvas.GetComponentsInChildren<Score>())
             {
@@ -660,22 +712,14 @@ public class Player : MonoBehaviour
 
         //m_KeepInAir = false;
     }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
-        {
-            m_ShouldBeDragged = false;
-        }
-    }
-
+    
     private void DeathFromAbove(GameObject iFromPlayer)
     {
         Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
         if (Vector3.Dot((iFromPlayer.transform.position - transform.position).normalized, transform.up) >= .85f)
         {
             source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
-            Death();
+            Kill();
             iFromPlayer.GetComponent<Player>().Score++;
             foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
                 s.UpdateScore();
@@ -688,13 +732,6 @@ public class Player : MonoBehaviour
         m_Rigidbody.velocity += Vector3.up * bumpFromCollision;
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("arena"))
-        {
-            m_ShouldBeDragged = true;
-        }
-    }
 
      public void Flip()
     {
@@ -705,7 +742,12 @@ public class Player : MonoBehaviour
         UI.transform.localScale = new Vector3( UI.transform.localScale.x*-1, UI.transform.localScale.y, UI.transform.localScale.z);
     }
 
-    private void Death()
+    public bool IsPlayerOutOfControl()
+    {
+        return m_IsBeingKickedOutOfMap;
+    }
+
+    public void Kill()
     {
         source.PlayOneShot(deathSound[Random.Range(0, deathSound.Length)], 1.0f);
         m_Animator.SetBool("Death", true);
@@ -733,6 +775,7 @@ public class Player : MonoBehaviour
             mesh.gameObject.SetActive(true);
         }
         m_Animator.SetBool("Death", false);
+
     }
 
     void updateQuiver(){
