@@ -451,16 +451,17 @@ public class MapGenerator : MonoBehaviour
         foreach (GameObject player in Players) {
             if(player.transform.position.x >= NUMBER_OF_COLUMN)
             {
-                tempY = ( NUMBER_OF_COLUMN * 2 + player.transform.position.x )- 1;
+                tempY = ( NUMBER_OF_COLUMN * 2 - player.transform.position.x );
             }
             else
             {
                 tempY = player.transform.position.x;
             }
-            if (player.transform.position.x > 1 && player.transform.position.x < NUMBER_OF_COLUMN - 1
-               && tempY < -1 && tempY > -NUMBER_OF_ROW + 1) {
-                x = Mathf.Max(-(int)tempY, 0);
-                y = Mathf.Max((int)player.transform.position.x, 0);
+            if (tempY >= 1 && tempY < NUMBER_OF_COLUMN - 1
+               && player.transform.position.y <= -1 && player.transform.position.y > -NUMBER_OF_ROW + 1) {
+                x = Mathf.Max(-(int)player.transform.position.y, 0);
+                y = Mathf.Max((int)tempY, 0);
+                Debug.Log("( " + x + ", " + y + " )");
                 if(x >= NUMBER_OF_ROW-1)
                 {
                     x = NUMBER_OF_ROW-2;
@@ -474,8 +475,8 @@ public class MapGenerator : MonoBehaviour
                     Debug.Log(x + " " + y);
                     return false;
                 }
-                x = Mathf.Max((-(int)tempY) + 1, 0);
-                y = Mathf.Max((int)player.transform.position.x, 0);
+                x = Mathf.Max(-((int)player.transform.position.y - 1), 0);
+                y = Mathf.Max((int)tempY, 0);
                 if (x >= NUMBER_OF_ROW-1)
                 {
                     x = NUMBER_OF_ROW-2;
@@ -491,8 +492,8 @@ public class MapGenerator : MonoBehaviour
                     Debug.Log(x + " " + y);
                     return false;
                 }
-                x = Mathf.Max(-(int)tempY, 0);
-                y = Mathf.Max((int)player.transform.position.x + 1, 0);
+                x = Mathf.Max(-(int)player.transform.position.y, 0);
+                y = Mathf.Max((int)tempY + 1, 0);
                 if (x >= NUMBER_OF_ROW-1)
                 {
                     x = NUMBER_OF_ROW - 2;
@@ -507,8 +508,8 @@ public class MapGenerator : MonoBehaviour
                     Debug.Log(x + " " + y);
                     return false;
                 }
-                x = Mathf.Max((-(int)tempY) + 1, 0);
-                y = Mathf.Max((int)player.transform.position.x + 1, 0);
+                x = Mathf.Max(-((int)player.transform.position.y - 1), 0);
+                y = Mathf.Max((int)tempY + 1, 0);
                 if (x >= NUMBER_OF_ROW-1)
                 {
                     x = NUMBER_OF_ROW - 2;
@@ -531,6 +532,14 @@ public class MapGenerator : MonoBehaviour
             if (player.transform.position.y > -1)
             {
                 player.transform.position = new Vector3(player.transform.position.x, -1, player.transform.position.z);
+            }
+            if (player.transform.position.x >= NUMBER_OF_COLUMN*2-1)
+            {
+                player.transform.position = new Vector3(NUMBER_OF_COLUMN*2-2, player.transform.position.y, player.transform.position.z);
+            }
+            if (player.transform.position.y <= -NUMBER_OF_ROW-1)
+            {
+                player.transform.position = new Vector3(player.transform.position.x, -NUMBER_OF_ROW-2, player.transform.position.z);
             }
         }
         return true;
