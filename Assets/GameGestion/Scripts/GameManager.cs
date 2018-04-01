@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
     
     void Start()
     {
-        InvokeRepeating("regenerateMap",5,5);
+        InvokeRepeating("regenerateMap",5,10);
 	    m_mapGenerator.GenerateMap();
         m_mapGeneratorBack.RegenerateMap();
     }
@@ -67,6 +67,30 @@ public class GameManager : MonoBehaviour {
         return blocksInBackNotInFront;
     }
 
+    List<Transform> getBlockInFrontNotInBack()
+    {
+        int x = 0;
+        int y = 0;
+        Transform blockTransform = null;
+        List<Transform> blocksInFrontNotInBack = new List<Transform>();
+        for (int i = 0; i < m_mapGenerator.transform.childCount; i++)
+        {
+            blockTransform = m_mapGenerator.transform.GetChild(i);
+            x = (int)-blockTransform.position.y;
+            y = (int)blockTransform.position.x;
+            if (y >= m_mapGenerator.NUMBER_OF_COLUMN)
+            {
+                y = m_mapGenerator.NUMBER_OF_COLUMN * 2 - y - 1;
+            }
+            if (m_mapGeneratorBack.cellValues[x][y] == 0)
+            {
+                blocksInFrontNotInBack.Add(blockTransform);
+            }
+        }
+
+        return blocksInFrontNotInBack;
+    }
+
     private IEnumerator LerpVelocityTo(List<Transform> iToMove, float iZOffset, float iTime)
     {
         float elapsedTime = 0;
@@ -96,9 +120,8 @@ public class GameManager : MonoBehaviour {
  
     private IEnumerator ChangeMapCoroutine()
     {
-        Debug.Log("test");
         List<Transform> blocksToMove = getBlockInBackNotInFront();
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 0, 2));
+        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 0, 4));
         m_mapGenerator.cellValues = m_mapGeneratorBack.cellValues;
         foreach (Transform child in m_mapGenerator.transform)
         {
@@ -108,10 +131,16 @@ public class GameManager : MonoBehaviour {
         m_mapGeneratorBack.RegenerateMap();
     }
 
+    private IEnumerator RemoveFrontCoroutine()
+    {
+        List<Transform> blocksToMove = getBlockInFrontNotInBack();
+        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 4));
+    }
     public void regenerateMap()
     {
         StartCoroutine(ChangeMapCoroutine());
+        StartCoroutine(RemoveFrontCoroutine());
         //m_mapGeneratorBack.RegenerateMap();
-		//m_backgroundGenerator.InstantiateBackground();
+        //m_backgroundGenerator.InstantiateBackground();
     }
 }
