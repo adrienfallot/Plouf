@@ -279,7 +279,9 @@ public class Player : MonoBehaviour
     {
         m_Animator.SetBool("Aiming", true);
         m_IsAiming = true;
-        m_Rigidbody.isKinematic = true;
+        //m_Rigidbody.isKinematic = true;
+        m_Rigidbody.useGravity = false;
+        m_Rigidbody.drag = 1000;
 
         Vector3 aimDirection = Vector3.zero;
         float aimAnimationNb = 2;
@@ -298,7 +300,9 @@ public class Player : MonoBehaviour
             m_Animator.SetInteger("AimingDirection", (int)aimAnimationNb);
         }
 
-        m_Rigidbody.isKinematic = false;
+        //m_Rigidbody.isKinematic = false;
+        m_Rigidbody.useGravity = true;
+        m_Rigidbody.drag = 0;
         m_Animator.SetBool("Aiming", false);
     }
 
@@ -548,7 +552,8 @@ public class Player : MonoBehaviour
         {
             m_IsGrippingWall = true;
             m_Rigidbody.velocity = Vector3.zero;
-            m_Rigidbody.isKinematic = true;
+            m_Rigidbody.useGravity = false;
+            m_Rigidbody.drag = 1000;
 
             //tant que le direction dans laquelle on se déplace va dans le même sens la direction dans laquelle on s'est aggripé,
             //on coupe le joueur du moteur physique.
@@ -557,7 +562,8 @@ public class Player : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
 
-            m_Rigidbody.isKinematic = false;
+            m_Rigidbody.useGravity = true;
+            m_Rigidbody.drag = 0;
             m_ShouldBeDragged = false;
             m_KeepInAir = true;
             //Pour laisser un peu de temps au joueur de sauter après avoir lâché un mur.
@@ -663,7 +669,7 @@ public class Player : MonoBehaviour
             Death();
             iFromPlayer.GetComponent<Player>().Score++;
             foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
-                        s.UpdateScore();
+                s.UpdateScore();
             }
         }
     }

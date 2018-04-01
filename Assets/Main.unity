@@ -267,18 +267,6 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
-    - target: {fileID: 1143730984616428, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1980825034431302, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1277420209406578, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
   m_IsPrefabParent: 0
@@ -706,18 +694,6 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
-    - target: {fileID: 1625237326479878, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1247911332900698, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1668866368988204, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
   m_IsPrefabParent: 0
@@ -988,18 +964,6 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
-    - target: {fileID: 1694046584303834, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1052949213701638, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1243245552266008, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
   m_IsPrefabParent: 0

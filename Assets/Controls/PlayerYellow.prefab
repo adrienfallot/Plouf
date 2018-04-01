@@ -106,7 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4594359150103624}
   - component: {fileID: 23133793557986914}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4074262466367184}
   - component: {fileID: 212295660943117030}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: NbArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 4599244007737120}
   - component: {fileID: 23104873006307348}
   - component: {fileID: 102696210223774168}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1592,7 +1592,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.15
+  m_Time: 0.35
   m_Parameters:
     serializedVersion: 2
     widthMultiplier: 0.15
@@ -1685,7 +1685,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.25
+  m_Time: 0.3
   m_Parameters:
     serializedVersion: 2
     widthMultiplier: 0.2
@@ -1778,7 +1778,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.25
+  m_Time: 0.3
   m_Parameters:
     serializedVersion: 2
     widthMultiplier: 0.2
@@ -1871,7 +1871,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.15
+  m_Time: 0.35
   m_Parameters:
     serializedVersion: 2
     widthMultiplier: 0.15
@@ -1964,7 +1964,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.35
+  m_Time: 0.5
   m_Parameters:
     serializedVersion: 2
     widthMultiplier: 0.3
