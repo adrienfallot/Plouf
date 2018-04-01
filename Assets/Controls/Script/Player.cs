@@ -554,6 +554,7 @@ public class Player : MonoBehaviour
                     Destroy(collision.gameObject);
                     Death();
                     m_Quiver.Enqueue(true);
+                    updateQuiver()
                     arrowRb.gameObject.GetComponent<Arrow>().getOwner().Score++;
                     foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
                         s.UpdateScore();
