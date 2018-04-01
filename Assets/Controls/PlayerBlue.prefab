@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 4077253383028636}
   - component: {fileID: 23937340692077982}
   - component: {fileID: 102777352406706356}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4858267511463366}
   - component: {fileID: 212692537556261878}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: NbArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -408,7 +408,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4190578576281412}
   - component: {fileID: 23661279565572500}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

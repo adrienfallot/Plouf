@@ -553,6 +553,7 @@ public class Player : MonoBehaviour
                 {
                     Destroy(collision.gameObject);
                     Death();
+                    m_Quiver.Enqueue(true);
                     arrowRb.gameObject.GetComponent<Arrow>().getOwner().Score++;
                     foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
                         s.UpdateScore();
@@ -654,8 +655,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(respawnTimer);
         
-        this.enabled = true;
-        m_Quiver.Enqueue(true);        
+        this.enabled = true;  
         
         MeshRenderer[] meshs = this.GetComponentsInChildren<MeshRenderer>(true);
         foreach (MeshRenderer mesh in meshs)

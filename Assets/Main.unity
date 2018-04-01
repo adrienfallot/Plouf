@@ -267,18 +267,6 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
-    - target: {fileID: 1143730984616428, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1980825034431302, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1277420209406578, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
   m_IsPrefabParent: 0
@@ -600,8 +588,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 694752021}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.3, y: -11.2, z: 0}
-  m_LocalScale: {x: 26, y: 24, z: 2}
+  m_LocalPosition: {x: 12.3, y: -9.5, z: 0}
+  m_LocalScale: {x: 26, y: 20.10001, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
@@ -706,18 +694,6 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
-    - target: {fileID: 1625237326479878, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1247911332900698, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1668866368988204, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
   m_IsPrefabParent: 0
@@ -926,16 +902,6 @@ Prefab:
       propertyPath: Players.Array.data[3]
       value: 
       objectReference: {fileID: 485196979}
-    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
-        type: 2}
-      propertyPath: groundTile
-      value: 
-      objectReference: {fileID: 191782, guid: ef4851c21912b4f9aa3f51d829b396ca, type: 2}
-    - target: {fileID: 114669298788735134, guid: 479507444426479488d667d5843e0d83,
-        type: 2}
-      propertyPath: spikeTile
-      value: 
-      objectReference: {fileID: 190012, guid: 848a810f22b5e4ff7928a4a05cf197f1, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
