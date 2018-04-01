@@ -60,7 +60,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public void RegenerateMap(){
+    public void RegenerateMap(int zOffset=0){
         
         foreach (Transform child in this.transform)
         {
@@ -72,7 +72,7 @@ public class MapGenerator : MonoBehaviour
             DetermineSolidity();
             DetermineSpawns();
         } while (!IsValidMap(false));
-        InstanciateMap(1);
+        InstanciateMap(zOffset);
     }
 
     int[][] InitialiseMatrix(int length, int width){

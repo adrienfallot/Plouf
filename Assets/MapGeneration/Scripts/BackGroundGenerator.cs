@@ -116,8 +116,8 @@ public class BackGroundGenerator : MonoBehaviour {
 
 				int blockId = backgroundCurrentTitle[i,j];
 				if(blockId != -1){
-					GameObject.Instantiate(listOfBlock[blockId], new Vector3(j, -i, 1f) + transform.position, Quaternion.identity, transform);
-                	GameObject.Instantiate(listOfBlock[blockId], new Vector3(25 - j, -i, 1f) + transform.position, Quaternion.identity, transform);
+					GameObject.Instantiate(listOfBlock[blockId], new Vector3(j, -i, 2.0f) + transform.position, Quaternion.identity, transform);
+                	GameObject.Instantiate(listOfBlock[blockId], new Vector3(25 - j, -i, 2.0f) + transform.position, Quaternion.identity, transform);
 				}
 			}
 		}
