@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
     private bool        m_ShouldBeDragged = false;
     private bool        m_IsGrippingWall = false;
     private bool        m_IsDraggedDown = false;
+    private bool        m_IsJumping = false;
     private bool        m_IsDashing = false;
     private bool        m_KeepInAir = false;
     private int         m_AvailableJumps = 1;
@@ -214,10 +215,23 @@ public class Player : MonoBehaviour
                     m_Animator.SetTrigger("Jump");
                     SpendJump();
                     CancelAim();
+                    StartCoroutine(JumpCoroutine());
                 }
 
             }
         }
+    }
+
+    private IEnumerator JumpCoroutine()
+    {
+        m_IsJumping = true;
+
+        while(m_Rigidbody.velocity.y > 0)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        m_IsJumping = false;
     }
 
     public void Aim()
@@ -265,7 +279,9 @@ public class Player : MonoBehaviour
     {
         m_Animator.SetBool("Aiming", true);
         m_IsAiming = true;
-        m_Rigidbody.isKinematic = true;
+        //m_Rigidbody.isKinematic = true;
+        m_Rigidbody.useGravity = false;
+        m_Rigidbody.drag = 1000;
 
         Vector3 aimDirection = Vector3.zero;
         float aimAnimationNb = 2;
@@ -284,7 +300,9 @@ public class Player : MonoBehaviour
             m_Animator.SetInteger("AimingDirection", (int)aimAnimationNb);
         }
 
-        m_Rigidbody.isKinematic = false;
+        //m_Rigidbody.isKinematic = false;
+        m_Rigidbody.useGravity = true;
+        m_Rigidbody.drag = 0;
         m_Animator.SetBool("Aiming", false);
     }
 
@@ -423,17 +441,42 @@ public class Player : MonoBehaviour
     {
         bool isGoingRight = Vector3.Dot(iDirection, Vector3.right) > 0;
 
-        RaycastHit hit;
+        float sideThreshold = (IsGrounded()) ? .1f : .01f;
+
+        RaycastHit upHit;
+        RaycastHit downHit;
+        bool hitUp = false;
+        bool hitDown = false;
+
+        Vector3 upOffset = new Vector3(0, m_DistToGround - .25f, 0);
 
         bool hasRightGrip = false;
         bool hasLeftGrip = false;
+
+        Debug.DrawRay(transform.position - upOffset, Vector3.right, Color.red);
+        Debug.DrawRay(transform.position + upOffset, Vector3.right, Color.red);
+        Debug.DrawRay(transform.position - upOffset, Vector3.left, Color.green);
+        Debug.DrawRay(transform.position + upOffset, Vector3.left, Color.green);
         if (isGoingRight)
         {
-            if (Physics.Raycast(transform.position, Vector3.right, out hit))
+            hitDown = Physics.Raycast(transform.position - upOffset, Vector3.right, out downHit);
+            hitUp = Physics.Raycast(transform.position + upOffset, Vector3.right, out upHit);
+
+            if (hitUp)
             {
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                if (upHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
                 {
-                    if (hit.distance < m_DistToSide + .01f)
+                    if (upHit.distance < m_DistToSide + sideThreshold)
+                    {
+                        hasRightGrip = true;
+                    }
+                }
+            }
+            if(hitDown)
+            {
+                if (downHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                {
+                    if (downHit.distance < m_DistToSide + sideThreshold)
                     {
                         hasRightGrip = true;
                     }
@@ -442,20 +485,33 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if(Physics.Raycast(transform.position, Vector3.left, out hit))
+            hitDown = Physics.Raycast(transform.position - upOffset, Vector3.left, out downHit);
+            hitUp = Physics.Raycast(transform.position + upOffset, Vector3.left, out upHit);
+
+            if (hitUp)
             {
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                if (upHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
                 {
-                    if (hit.distance < m_DistToSide + .01f)
+                    if (upHit.distance < m_DistToSide + sideThreshold)
                     {
                         hasLeftGrip = true;
                     }
                 }
             }
-            
+            if (hitDown)
+            {
+                if (downHit.collider.gameObject.layer == LayerMask.NameToLayer("arena"))
+                {
+                    if (downHit.distance < m_DistToSide + sideThreshold)
+                    {
+                        hasLeftGrip = true;
+                    }
+                }
+            }
+
         }
 
-        return (isGoingRight) ? hasRightGrip : hasLeftGrip;
+        return (isGoingRight) ? hasRightGrip : hasLeftGrip && m_HorizontalDirection != Vector3.zero;
         
     }
 
@@ -492,25 +548,31 @@ public class Player : MonoBehaviour
 
     private IEnumerator GrippingWallCoroutine(Vector3 iGrippingDirection)
     {
-        m_IsGrippingWall = true;
-        m_Rigidbody.velocity = Vector3.zero;
-        m_Rigidbody.isKinematic = true;
-
-        //tant que le direction dans laquelle on se déplace va dans le même sens la direction dans laquelle on s'est aggripé,
-        //on coupe le joueur du moteur physique.
-        while (Vector3.Dot(iGrippingDirection, m_HorizontalDirection) > 0)
+        if(!m_IsJumping)
         {
-            yield return new WaitForEndOfFrame();
-        }
+            m_IsGrippingWall = true;
+            m_Rigidbody.velocity = Vector3.zero;
+            m_Rigidbody.useGravity = false;
+            m_Rigidbody.drag = 1000;
 
-        m_Rigidbody.isKinematic = false;
-        m_ShouldBeDragged = false;
-        m_KeepInAir = true;
-        //Pour laisser un peu de temps au joueur de sauter après avoir lâché un mur.
-        yield return new WaitForSeconds(floattingTimeAfterGrip);
-        m_KeepInAir = false;
-        m_ShouldBeDragged = true;
-        m_IsGrippingWall = false;
+            //tant que le direction dans laquelle on se déplace va dans le même sens la direction dans laquelle on s'est aggripé,
+            //on coupe le joueur du moteur physique.
+            while (Vector3.Dot(iGrippingDirection, m_HorizontalDirection) > 0 && !m_IsJumping)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            m_Rigidbody.useGravity = true;
+            m_Rigidbody.drag = 0;
+            m_ShouldBeDragged = false;
+            m_KeepInAir = true;
+            //Pour laisser un peu de temps au joueur de sauter après avoir lâché un mur.
+            yield return new WaitForSeconds(floattingTimeAfterGrip);
+            m_KeepInAir = false;
+            m_ShouldBeDragged = true;
+            m_IsGrippingWall = false;
+        }
+        
         yield return StartCoroutine(DragDownCoroutine());
     }
 
@@ -616,7 +678,7 @@ public class Player : MonoBehaviour
             Death();
             iFromPlayer.GetComponent<Player>().Score++;
             foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
-                        s.UpdateScore();
+                s.UpdateScore();
             }
         }
     }

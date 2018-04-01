@@ -954,18 +954,6 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
-    - target: {fileID: 1694046584303834, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1052949213701638, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1243245552266008, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
   m_IsPrefabParent: 0
