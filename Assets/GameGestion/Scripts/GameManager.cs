@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null; 
 
 	public MapGenerator m_mapGenerator = null;
-	public BackGroundGenerator m_backgroundGenerator = null;
+    public MapGenerator m_mapGeneratorBack = null;
+    //public BackGroundGenerator m_backgroundGenerator = null;
 
 	private int nextSpawn = 0;
 
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour {
     void Start()
     {
         InvokeRepeating("regenerateMap",0,5);
+	    m_mapGenerator.GenerateMap();
     }
 
 	public Vector3 GetUnusedSpawn() {
@@ -42,7 +44,7 @@ public class GameManager : MonoBehaviour {
 
     public void regenerateMap()
     {
-        m_mapGenerator.RegenerateMap();
-		m_backgroundGenerator.InstantiateBackground();
+        m_mapGeneratorBack.RegenerateMap();
+		//m_backgroundGenerator.InstantiateBackground();
     }
 }
