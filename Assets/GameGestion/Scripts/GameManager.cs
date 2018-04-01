@@ -8,9 +8,10 @@ public class GameManager : MonoBehaviour {
 
 	public MapGenerator m_mapGenerator = null;
     public MapGenerator m_mapGeneratorBack = null;
-    //public BackGroundGenerator m_backgroundGenerator = null;
+    public MapGenerator m_mapGeneratorDeepBack = null;
+    public BackGroundGenerator m_backgroundGenerator = null;
 
-	private int nextSpawn = 0;
+    private int nextSpawn = 0;
 
     void Awake()
 	{
@@ -24,9 +25,10 @@ public class GameManager : MonoBehaviour {
     
     void Start()
     {
-        InvokeRepeating("regenerateMap",5,5);
+        InvokeRepeating("regenerateMap",5,10);
 	    m_mapGenerator.GenerateMap();
-        m_mapGeneratorBack.RegenerateMap();
+        m_mapGeneratorBack.RegenerateMap(1);
+        m_mapGeneratorDeepBack.RegenerateMap(2);
     }
 
 	public Vector3 GetUnusedSpawn() {
@@ -67,6 +69,78 @@ public class GameManager : MonoBehaviour {
         return blocksInBackNotInFront;
     }
 
+    List<Transform> getBlockInFrontNotInBack()
+    {
+        int x = 0;
+        int y = 0;
+        Transform blockTransform = null;
+        List<Transform> blocksInFrontNotInBack = new List<Transform>();
+        for (int i = 0; i < m_mapGenerator.transform.childCount; i++)
+        {
+            blockTransform = m_mapGenerator.transform.GetChild(i);
+            x = (int)-blockTransform.position.y;
+            y = (int)blockTransform.position.x;
+            if (y >= m_mapGenerator.NUMBER_OF_COLUMN)
+            {
+                y = m_mapGenerator.NUMBER_OF_COLUMN * 2 - y - 1;
+            }
+            if (m_mapGeneratorBack.cellValues[x][y] == 0)
+            {
+                blocksInFrontNotInBack.Add(blockTransform);
+            }
+        }
+
+        return blocksInFrontNotInBack;
+    }
+
+    List<Transform> getBlockInBackNotInDeepBack()
+    {
+        int x = 0;
+        int y = 0;
+        Transform blockTransform = null;
+        List<Transform> blocksInBackNotInDeepBack = new List<Transform>();
+        for (int i = 0; i < m_mapGeneratorBack.transform.childCount; i++)
+        {
+            blockTransform = m_mapGeneratorBack.transform.GetChild(i);
+            x = (int)-blockTransform.position.y;
+            y = (int)blockTransform.position.x;
+            if (y >= m_mapGeneratorBack.NUMBER_OF_COLUMN)
+            {
+                y = m_mapGeneratorBack.NUMBER_OF_COLUMN * 2 - y - 1;
+            }
+            if (m_mapGeneratorDeepBack.cellValues[x][y] == 0)
+            {
+                blocksInBackNotInDeepBack.Add(blockTransform);
+            }
+        }
+
+        return blocksInBackNotInDeepBack;
+    }
+
+    List<Transform> getBlockInDeepBackNotInBack()
+    {
+        int x = 0;
+        int y = 0;
+        Transform blockTransform = null;
+        List<Transform> blocksInDeepBackNotInBack = new List<Transform>();
+        for (int i = 0; i < m_mapGeneratorDeepBack.transform.childCount; i++)
+        {
+            blockTransform = m_mapGeneratorDeepBack.transform.GetChild(i);
+            x = (int)-blockTransform.position.y;
+            y = (int)blockTransform.position.x;
+            if (y >= m_mapGeneratorDeepBack.NUMBER_OF_COLUMN)
+            {
+                y = m_mapGeneratorDeepBack.NUMBER_OF_COLUMN * 2 - y - 1;
+            }
+            if (m_mapGeneratorBack.cellValues[x][y] == 0)
+            {
+                blocksInDeepBackNotInBack.Add(blockTransform);
+            }
+        }
+
+        return blocksInDeepBackNotInBack;
+    }
+
     private IEnumerator LerpVelocityTo(List<Transform> iToMove, float iZOffset, float iTime)
     {
         float elapsedTime = 0;
@@ -96,22 +170,69 @@ public class GameManager : MonoBehaviour {
  
     private IEnumerator ChangeMapCoroutine()
     {
-        Debug.Log("test");
+        int[][] tmp = m_mapGenerator.cellValues;
         List<Transform> blocksToMove = getBlockInBackNotInFront();
+        Debug.Log("A");
         yield return StartCoroutine(LerpVelocityTo(blocksToMove, 0, 2));
         m_mapGenerator.cellValues = m_mapGeneratorBack.cellValues;
+        Debug.Log("B");
         foreach (Transform child in m_mapGenerator.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
+        m_mapGeneratorBack.cellValues = tmp;
         m_mapGenerator.InstanciateMap();
-        m_mapGeneratorBack.RegenerateMap();
+    }
+
+    private IEnumerator RemoveFrontCoroutine()
+    {
+        List<Transform> blocksToMove = getBlockInFrontNotInBack();
+        Debug.Log("C");
+        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 2));
+        Debug.Log("D");
+        /*foreach (Transform child in m_mapGeneratorBack.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }*/
+        m_mapGeneratorBack.InstanciateMap(1);
+    }
+
+    private IEnumerator ChangeBackgroundCoroutine()
+    {
+        List<Transform> blocksToMove = getBlockInBackNotInDeepBack();
+        Debug.Log("E");
+        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 2, 5));
+        Debug.Log("F");
+        m_mapGeneratorBack.cellValues = m_mapGeneratorDeepBack.cellValues;
+        foreach (Transform child in m_mapGeneratorBack.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        m_mapGeneratorBack.InstanciateMap(1);
+        m_mapGeneratorDeepBack.RegenerateMap(2);
+    }
+    private IEnumerator RemoveBackgroundCoroutine()
+    {
+        List<Transform> blocksToMove = getBlockInDeepBackNotInBack();
+        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 5));
+    }
+
+    private IEnumerator ChangeAllMap()
+    {
+        StartCoroutine(ChangeMapCoroutine());
+        yield return StartCoroutine(RemoveFrontCoroutine());
+        StartCoroutine(ChangeBackgroundCoroutine());
+        yield return StartCoroutine(RemoveBackgroundCoroutine());
     }
 
     public void regenerateMap()
     {
-        StartCoroutine(ChangeMapCoroutine());
+        StartCoroutine(ChangeAllMap());
+        //StartCoroutine(ChangeMapCoroutine());
+        //StartCoroutine(RemoveFrontCoroutine());
+        //StartCoroutine(ChangeBackgroundCoroutine());
+        //StartCoroutine(RemoveBackgroundCoroutine());
         //m_mapGeneratorBack.RegenerateMap();
-		//m_backgroundGenerator.InstantiateBackground();
+        //m_backgroundGenerator.InstantiateBackground();
     }
 }
