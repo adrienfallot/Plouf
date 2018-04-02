@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour {
 	public MapGenerator m_mapGenerator = null;
     public MapGenerator m_mapGeneratorBack = null;
     public MapGenerator m_mapGeneratorDeepBack = null;
+    public Material m_ForegroundMapMaterial = null;
+    public Material m_BackgroundMapMaterial = null;
+    public Material m_DeepBeckgroundMapMaterial = null;
     public BackGroundGenerator m_backgroundGenerator = null;
 
     private int nextSpawn = 0;
@@ -141,15 +144,23 @@ public class GameManager : MonoBehaviour {
         return blocksInDeepBackNotInBack;
     }
 
-    private IEnumerator LerpVelocityTo(List<Transform> iToMove, float iZOffset, float iTime)
+    private IEnumerator LerpBlockPosTo(List<Transform> iToMove, float iZOffset, float iTime)
     {
+        //on set le material de chaque cube à toBg
+        List<Vector3> startPos = new List<Vector3>();
+        foreach(Transform cube in iToMove)
+        {
+            //cube.gameObject.GetComponent<Renderer>().material = m_BackgroundMapMaterial;
+            startPos.Add(cube.position);
+        }
+
         float elapsedTime = 0;
-        Vector3[] startPos = new Vector3[iToMove.Count];
+        /*Vector3[] startPos = new Vector3[iToMove.Count];
         for (int i = 0; i < iToMove.Count; i++)
         {
             startPos[i] = iToMove[i].position;
-        }
-
+        }*/
+        //Vector3 lerpedColor = Vector3.zero;
         while (elapsedTime < iTime)
         {
             for (int i = 0; i < iToMove.Count; i++)
@@ -159,6 +170,11 @@ public class GameManager : MonoBehaviour {
                                                     iToMove[i].position.y,
                                                     iZOffset),
                                                     (elapsedTime / iTime));
+                /*lerpedColor = Vector3.Lerp(Vector3.one,
+                                            new Vector3(.5f, .5f, .5f),
+                                            elapsedTime / iTime);
+                m_BackgroundMapMaterial.SetColor("Albedo", new Color(lerpedColor.x, lerpedColor.y, lerpedColor.z));*/
+
                 
             }
             elapsedTime += Time.deltaTime;
@@ -173,7 +189,7 @@ public class GameManager : MonoBehaviour {
         int[][] tmp = m_mapGenerator.cellValues;
         List<Transform> blocksToMove = getBlockInBackNotInFront();
         Debug.Log("A");
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 0, 2));
+        yield return StartCoroutine(LerpBlockPosTo(blocksToMove, 0, 2));
         m_mapGenerator.cellValues = m_mapGeneratorBack.cellValues;
         Debug.Log("B");
         foreach (Transform child in m_mapGenerator.transform)
@@ -188,7 +204,7 @@ public class GameManager : MonoBehaviour {
     {
         List<Transform> blocksToMove = getBlockInFrontNotInBack();
         Debug.Log("C");
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 2));
+        yield return StartCoroutine(LerpBlockPosTo(blocksToMove, 1, 2));
         Debug.Log("D");
         /*foreach (Transform child in m_mapGeneratorBack.transform)
         {
@@ -201,7 +217,7 @@ public class GameManager : MonoBehaviour {
     {
         List<Transform> blocksToMove = getBlockInBackNotInDeepBack();
         Debug.Log("E");
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 2, 5));
+        yield return StartCoroutine(LerpBlockPosTo(blocksToMove, 2, 5));
         Debug.Log("F");
         m_mapGeneratorBack.cellValues = m_mapGeneratorDeepBack.cellValues;
         foreach (Transform child in m_mapGeneratorBack.transform)
@@ -214,7 +230,7 @@ public class GameManager : MonoBehaviour {
     private IEnumerator RemoveBackgroundCoroutine()
     {
         List<Transform> blocksToMove = getBlockInDeepBackNotInBack();
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 5));
+        yield return StartCoroutine(LerpBlockPosTo(blocksToMove, 1, 5));
     }
 
     private IEnumerator ChangeAllMap()

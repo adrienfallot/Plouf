@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - SolidEnvironment
+  - Spike
   layers:
   - Default
   - TransparentFX

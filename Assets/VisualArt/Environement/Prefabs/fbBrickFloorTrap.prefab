@@ -29,6 +29,7 @@ GameObject:
   - component: {fileID: 3364584}
   - component: {fileID: 2320908}
   - component: {fileID: 6574348}
+  - component: {fileID: 65645160767852394}
   - component: {fileID: 11457640}
   m_Layer: 0
   m_Name: fbBrickFloorTrap
@@ -78,7 +79,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 5c403034d2c9f4060b14275985debdd4, type: 2}
+  - {fileID: 2100000, guid: d508dcacc6be1c846b0026e2df5cccd6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -112,7 +113,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: f6f6a5d5ff5ba4f5f8422dbfdb502acf, type: 2}
+  - {fileID: 2100000, guid: 65edc88a8a10dc949862b489dbf068b7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -198,3 +199,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 190012}
   m_IsPrefabParent: 1
+--- !u!65 &65645160767852394
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 190012}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.31338105, y: 0.28636047, z: 0.09630823}
+  m_Center: {x: 0.02597161, y: -0.014490909, z: -0.5067501}
