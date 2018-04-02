@@ -167,6 +167,10 @@ Prefab:
       propertyPath: m_Constraints
       value: 112
       objectReference: {fileID: 0}
+    - target: {fileID: 1865304400498344, guid: 20d4ea054041ebc43b810dcae45f65fa, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 20d4ea054041ebc43b810dcae45f65fa, type: 2}
   m_IsPrefabParent: 0
@@ -276,6 +280,10 @@ Prefab:
         type: 2}
       propertyPath: m_Constraints
       value: 112
+      objectReference: {fileID: 0}
+    - target: {fileID: 1094406123034982, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
@@ -882,6 +890,10 @@ Prefab:
       propertyPath: m_Constraints
       value: 112
       objectReference: {fileID: 0}
+    - target: {fileID: 1112077832794942, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
   m_IsPrefabParent: 0
@@ -1258,6 +1270,10 @@ Prefab:
       propertyPath: MAX_SPIKE
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1308066086721102, guid: 479507444426479488d667d5843e0d83, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 479507444426479488d667d5843e0d83, type: 2}
   m_IsPrefabParent: 0
@@ -1314,6 +1330,10 @@ Prefab:
         type: 2}
       propertyPath: m_Constraints
       value: 112
+      objectReference: {fileID: 0}
+    - target: {fileID: 1198070104851976, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 28ba1d13f1943a64489825935c119b54, type: 2}

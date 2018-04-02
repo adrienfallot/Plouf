@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - SolidEnvironment
+  - Spike
+  - Map_Spike
+  - Map_Floor
+  - Map_Wall
   layers:
   - Default
   - TransparentFX
