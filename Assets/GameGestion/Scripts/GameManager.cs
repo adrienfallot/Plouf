@@ -8,6 +8,14 @@ struct Trajectory
     public Vector3 start;
     public Vector3 end;
     public bool firstAxisIsX;
+
+    public Trajectory(Transform t, Vector3 s, Vector3 e, bool f)
+    {
+        transform = t;
+        start = s;
+        end = e;
+        firstAxisIsX = f;
+    }
 }
 
 public class GameManager : MonoBehaviour {
@@ -37,7 +45,7 @@ public class GameManager : MonoBehaviour {
         m_mapGenerator.GenerateMap();
         m_mapGeneratorBack.RegenerateMap(1);
         m_mapGeneratorDeepBack.RegenerateMap(2);
-        InvokeRepeating("regenerateMap", 0, 6);
+        InvokeRepeating("regenerateMap", 0, 10);
     }
 
 	public Vector3 GetUnusedSpawn() {
@@ -102,54 +110,6 @@ public class GameManager : MonoBehaviour {
         return blocksInFrontNotInBack;
     }
 
-    List<Transform> getBlockInBackNotInDeepBack()
-    {
-        int x = 0;
-        int y = 0;
-        Transform blockTransform = null;
-        List<Transform> blocksInBackNotInDeepBack = new List<Transform>();
-        for (int i = 0; i < m_mapGeneratorBack.transform.childCount; i++)
-        {
-            blockTransform = m_mapGeneratorBack.transform.GetChild(i);
-            x = (int)-blockTransform.position.y;
-            y = (int)blockTransform.position.x;
-            if (y >= m_mapGeneratorBack.NUMBER_OF_COLUMN)
-            {
-                y = m_mapGeneratorBack.NUMBER_OF_COLUMN * 2 - y - 1;
-            }
-            if (m_mapGeneratorDeepBack.cellValues[x][y] == 0)
-            {
-                blocksInBackNotInDeepBack.Add(blockTransform);
-            }
-        }
-
-        return blocksInBackNotInDeepBack;
-    }
-
-    List<Transform> getBlockInDeepBackNotInBack()
-    {
-        int x = 0;
-        int y = 0;
-        Transform blockTransform = null;
-        List<Transform> blocksInDeepBackNotInBack = new List<Transform>();
-        for (int i = 0; i < m_mapGeneratorDeepBack.transform.childCount; i++)
-        {
-            blockTransform = m_mapGeneratorDeepBack.transform.GetChild(i);
-            x = (int)-blockTransform.position.y;
-            y = (int)blockTransform.position.x;
-            if (y >= m_mapGeneratorDeepBack.NUMBER_OF_COLUMN)
-            {
-                y = m_mapGeneratorDeepBack.NUMBER_OF_COLUMN * 2 - y - 1;
-            }
-            if (m_mapGeneratorBack.cellValues[x][y] == 0)
-            {
-                blocksInDeepBackNotInBack.Add(blockTransform);
-            }
-        }
-
-        return blocksInDeepBackNotInBack;
-    }
-
     private IEnumerator LerpVelocityTo(List<Transform> iToMove, float iZOffset, float iTime)
     {
         float elapsedTime = 0;
@@ -197,43 +157,6 @@ public class GameManager : MonoBehaviour {
         m_mapGeneratorBack.InstanciateMap(1);
     }
 
-    private IEnumerator RemoveFrontCoroutine()
-    {
-        List<Transform> blocksToMove = getBlockInFrontNotInBack();
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 2));
-        /*foreach (Transform child in m_mapGeneratorBack.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }*/
-        m_mapGeneratorBack.InstanciateMap(1);
-    }
-
-    private IEnumerator ChangeBackgroundCoroutine()
-    {
-        List<Transform> blocksToMove = getBlockInBackNotInDeepBack();
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 2, 5));
-        m_mapGeneratorBack.cellValues = m_mapGeneratorDeepBack.cellValues;
-        foreach (Transform child in m_mapGeneratorBack.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-        m_mapGeneratorBack.InstanciateMap(1);
-        m_mapGeneratorDeepBack.RegenerateMap(2);
-    }
-    private IEnumerator RemoveBackgroundCoroutine()
-    {
-        List<Transform> blocksToMove = getBlockInDeepBackNotInBack();
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 1, 5));
-    }
-
-    private IEnumerator ChangeAllMap()
-    {
-        StartCoroutine(ChangeMapCoroutine());
-        yield return StartCoroutine(RemoveFrontCoroutine());
-        StartCoroutine(ChangeBackgroundCoroutine());
-        yield return StartCoroutine(RemoveBackgroundCoroutine());
-    }
-
     public void regenerateMap()
     {
         StartCoroutine(ChangeMapV2Coroutine());
@@ -263,7 +186,17 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator LerpTrajectory(List<Trajectory> iToMove, float iTime)
     {
-        float elapsedTime = 0;
+        yield return LerpTrajectoryByAxis(iToMove, iTime, true);
+        for(int i = 0; i < iToMove.Count; i++)
+        {
+            iToMove[i] = new Trajectory(iToMove[i].transform, 
+                                        new Vector3(iToMove[i].transform.position.x, iToMove[i].transform.position.y, iToMove[i].transform.position.z),
+                                        iToMove[i].end,
+                                        iToMove[i].firstAxisIsX);
+        }
+        yield return new WaitForEndOfFrame();
+        yield return LerpTrajectoryByAxis(iToMove, iTime, false);
+        /*float elapsedTime = 0;
 
         while (elapsedTime < iTime)
         {
@@ -273,6 +206,69 @@ public class GameManager : MonoBehaviour {
                                                              iToMove[i].end,
                                                              (elapsedTime / iTime));
 
+            }
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+
+        }*/
+    }
+
+    private IEnumerator LerpTrajectoryByBlock(Trajectory iToMove, float iTime, bool isFirstPass)
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < iTime)
+        {
+            if (iToMove.start.z != iToMove.end.z)
+            {
+                iToMove.transform.position = Vector3.Lerp(iToMove.start,
+                                                                iToMove.end,
+                                                                (elapsedTime / iTime));
+            }
+            else if (iToMove.firstAxisIsX && isFirstPass || (!iToMove.firstAxisIsX && !isFirstPass))
+            {
+                iToMove.transform.position = Vector3.Lerp(iToMove.start,
+                                                                new Vector3(iToMove.end.x, iToMove.start.y, iToMove.start.z),
+                                                                (elapsedTime / iTime));
+            }
+            else
+            {
+                iToMove.transform.position = Vector3.Lerp(iToMove.start,
+                                                                new Vector3(iToMove.start.x, iToMove.end.y, iToMove.start.z),
+                                                                (elapsedTime / iTime));
+            }
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+
+        }
+    }
+
+    private IEnumerator LerpTrajectoryByAxis(List<Trajectory> iToMove, float iTime, bool isFirstPass)
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < iTime)
+        {
+            for (int i = 0; i < iToMove.Count; i++)
+            {
+                if(iToMove[i].start.z != iToMove[i].end.z)
+                {
+                    iToMove[i].transform.position = Vector3.Lerp(iToMove[i].start,
+                                                                 iToMove[i].end,
+                                                                 (elapsedTime / iTime));
+                }
+                else if (iToMove[i].firstAxisIsX && isFirstPass || (!iToMove[i].firstAxisIsX && !isFirstPass))
+                {
+                    iToMove[i].transform.position = Vector3.Lerp(iToMove[i].start,
+                                                                 new Vector3(iToMove[i].end.x, iToMove[i].start.y, iToMove[i].start.z),
+                                                                 (elapsedTime / iTime));
+                }
+                else
+                {
+                    iToMove[i].transform.position = Vector3.Lerp(iToMove[i].start,
+                                                                 new Vector3(iToMove[i].start.x, iToMove[i].end.y, iToMove[i].start.z),
+                                                                 (elapsedTime / iTime));
+                }
             }
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -339,7 +335,14 @@ public class GameManager : MonoBehaviour {
             trajectory.transform = start[randomValue];
             trajectory.start = new Vector3(start[randomValue].position.x, start[randomValue].position.y, start[randomValue].position.z);
             trajectory.end = new Vector3(end[i].position.x, end[i].position.y, start[randomValue].position.z);
-            trajectory.firstAxisIsX = false;
+            if (Random.Range(0.0f, 1.0f) >= 0.5)
+            {
+                trajectory.firstAxisIsX = true;
+            }
+            else
+            {
+                trajectory.firstAxisIsX = false;
+            }
             trajectories.Add(trajectory);
             start.RemoveAt(randomValue);
         }
@@ -374,21 +377,5 @@ public class GameManager : MonoBehaviour {
             }
         }
         return blocksOfType;
-    }
-
-    int GetNumberOfBlock(int type, int[][] map)
-    {
-        int numberOfBlock = 0;
-        for (int i = 0; i < m_mapGeneratorBack.NUMBER_OF_ROW; i++)
-        {
-            for (int j = 0; j < m_mapGeneratorBack.NUMBER_OF_COLUMN; j++)
-            {
-                if (map[i][j] == type)
-                {
-                    numberOfBlock++;
-                }
-            }
-        }
-        return numberOfBlock;
     }
 }
