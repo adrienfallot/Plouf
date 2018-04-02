@@ -48,6 +48,7 @@ public class MapGenerator : MonoBehaviour
             DetermineSolidity();
             DetermineSpawns();
         } while (!IsValidMap(true));
+        DetermineBlockType();
         InstanciateMap();
         PlacePlayer();
     }
@@ -72,6 +73,7 @@ public class MapGenerator : MonoBehaviour
             DetermineSolidity();
             DetermineSpawns();
         } while (!IsValidMap(false));
+        DetermineBlockType();
         InstanciateMap(zOffset);
     }
 
@@ -465,7 +467,6 @@ public class MapGenerator : MonoBehaviour
                && player.transform.position.y <= -1 && player.transform.position.y > -NUMBER_OF_ROW + 1) {
                 x = Mathf.Max(-(int)player.transform.position.y, 0);
                 y = Mathf.Max((int)tempY, 0);
-                Debug.Log("( " + x + ", " + y + " )");
                 if(x >= NUMBER_OF_ROW-1)
                 {
                     x = NUMBER_OF_ROW-2;
@@ -475,8 +476,6 @@ public class MapGenerator : MonoBehaviour
                     y = NUMBER_OF_COLUMN - 2;
                 }
                 if (cellValues[x][y] == 1){
-                    Debug.Log("AAA");
-                    Debug.Log(x + " " + y);
                     return false;
                 }
                 x = Mathf.Max(-((int)player.transform.position.y - 1), 0);
@@ -492,8 +491,6 @@ public class MapGenerator : MonoBehaviour
                 if (cellValues[x][y] == 1)
                 {
                     cellValues[x][y] = 2;
-                    Debug.Log("BBB");
-                    Debug.Log(x + " " + y);
                     return false;
                 }
                 x = Mathf.Max(-(int)player.transform.position.y, 0);
@@ -508,8 +505,6 @@ public class MapGenerator : MonoBehaviour
                 }
                 if (cellValues[x][y] == 1)
                 {
-                    Debug.Log("CCC");
-                    Debug.Log(x + " " + y);
                     return false;
                 }
                 x = Mathf.Max(-((int)player.transform.position.y - 1), 0);
@@ -524,8 +519,6 @@ public class MapGenerator : MonoBehaviour
                 }
                 if (cellValues[x][y] == 1)
                 {
-                    Debug.Log("DDD");
-                    Debug.Log(x + " " + y);
                     return false;
                 }
             }
@@ -899,37 +892,45 @@ public class MapGenerator : MonoBehaviour
         return getSliceOfArray(secondHandCandidates, 0, k);
     }
 
-	public void InstanciateMap(int z_offset = 0){
+    public void DetermineBlockType()
+    {
+        //0 = empty; 1 = wall; 2 = ground; 3 = spike;
         int numberOfSpike = 0;
+        for (int i = 0; i < NUMBER_OF_ROW; i++)
+        {
+            for (int j = 0; j < NUMBER_OF_COLUMN; j++)
+            {
+                if (i > 3 && numberOfSpike < MAX_SPIKE && cellValues[i - 2][j] == 0 && cellValues[i - 1][j] == 0 && cellValues[i][j] == 1 && Random.Range(0.0f, 1.0f) < PROBABILITY_OF_SPIKE)
+                {
+                    cellValues[i][j] = 3;
+                    numberOfSpike++;
+                }
+                else if (cellValues[i][j] == 1 && i > 1 && cellValues[i - 1][j] == 0)
+                {
+                    cellValues[i][j] = 2;
+                }
+            }
+        }
+    }
+
+	public void InstanciateMap(int z_offset = 0){
+        //0 = empty; 1 = wall; 2 = ground; 3 = spike;
 		for (int i = 0; i < NUMBER_OF_ROW; i++) {
 			for (int j = 0; j < NUMBER_OF_COLUMN; j++) {
-                if(i > 3 && numberOfSpike < MAX_SPIKE && cellValues[i-2][j] == 0 && cellValues[i-1][j] == 0 && cellValues[i][j] == 1 && Random.Range(0.0f, 1.0f) < PROBABILITY_OF_SPIKE)
+                if(cellValues[i][j] == 1)
+                {
+                    GameObject.Instantiate(blackTile, new Vector3(j, -i, z_offset) + transform.position, Quaternion.identity, transform);
+                    GameObject.Instantiate(blackTile, new Vector3(25 - j, -i, z_offset) + transform.position, Quaternion.identity, transform);
+                }
+                else if(cellValues[i][j] == 2)
+                {
+                    GameObject.Instantiate(groundTile, new Vector3(j, -i, z_offset) + transform.position, Quaternion.identity, transform);
+                    GameObject.Instantiate(groundTile, new Vector3(25 - j, -i, z_offset) + transform.position, Quaternion.identity, transform);
+                }
+                else if (cellValues[i][j] == 3)
                 {
                     GameObject.Instantiate(spikeTile, new Vector3(j, -i, z_offset) + transform.position, Quaternion.identity, transform);
                     GameObject.Instantiate(spikeTile, new Vector3(25 - j, -i, z_offset) + transform.position, Quaternion.identity, transform);
-                    numberOfSpike++;
-                }
-                else if (cellValues[i][j] == 1)
-                {
-                    if (i > 1 && cellValues[i-1][j] == 0)
-                    {
-                        GameObject.Instantiate(groundTile, new Vector3(j, -i, z_offset) + transform.position, Quaternion.identity, transform);
-                        GameObject.Instantiate(groundTile, new Vector3(25 - j, -i, z_offset) + transform.position, Quaternion.identity, transform);
-                    }
-                    else
-                    {
-                        GameObject.Instantiate(blackTile, new Vector3(j, -i, z_offset) + transform.position, Quaternion.identity, transform);
-                        GameObject.Instantiate(blackTile, new Vector3(25 - j, -i, z_offset) + transform.position, Quaternion.identity, transform);
-                    }
-                }
-                else if (cellValues[i][j] == 2)
-                {
-                    if(debugTile)
-                    {
-                        GameObject.Instantiate(debugTile, new Vector3(j, -i, 0) + transform.position, Quaternion.identity, transform);
-                        GameObject.Instantiate(debugTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
-                    }
-                    
                 }
                 else if (cellValues[i][j] == 0 && whiteTile)
                 {
@@ -937,14 +938,6 @@ public class MapGenerator : MonoBehaviour
                     GameObject.Instantiate(whiteTile, new Vector3(25 - j, -i, 0) + transform.position, Quaternion.identity, transform);
                 }
 			}
-		}
-        if(debugTile)
-        {
-            foreach (int[] coordinate in spawns)
-            {
-                //GameObject.Instantiate(debugTile, new Vector3(coordinate[1], -coordinate[0], 0) + transform.position, Quaternion.identity, transform);
-            }
-        }
-        
+		}        
 	}
 }
