@@ -186,8 +186,12 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator LerpTrajectory(List<Trajectory> iToMove, float iTime)
     {
-        yield return LerpTrajectoryByAxis(iToMove, iTime, true);
-        for(int i = 0; i < iToMove.Count; i++)
+        for (int i = 0; i < iToMove.Count - 1; i++)
+        {
+            StartCoroutine(LerpTrajectoryByBlock(iToMove[i], iTime));
+        }
+        yield return LerpTrajectoryByBlock(iToMove[iToMove.Count - 1], iTime);
+        /*for(int i = 0; i < iToMove.Count; i++)
         {
             iToMove[i] = new Trajectory(iToMove[i].transform, 
                                         new Vector3(iToMove[i].transform.position.x, iToMove[i].transform.position.y, iToMove[i].transform.position.z),
@@ -195,7 +199,7 @@ public class GameManager : MonoBehaviour {
                                         iToMove[i].firstAxisIsX);
         }
         yield return new WaitForEndOfFrame();
-        yield return LerpTrajectoryByAxis(iToMove, iTime, false);
+        yield return LerpTrajectoryByAxis(iToMove, iTime, false);*/
         /*float elapsedTime = 0;
 
         while (elapsedTime < iTime)
@@ -213,34 +217,57 @@ public class GameManager : MonoBehaviour {
         }*/
     }
 
-    private IEnumerator LerpTrajectoryByBlock(Trajectory iToMove, float iTime, bool isFirstPass)
+    private IEnumerator LerpTrajectoryByBlock(Trajectory iToMove, float iTime)
     {
         float elapsedTime = 0;
-
-        while (elapsedTime < iTime)
+        float timeFirstPass = Random.Range(3*iTime / 10, 7 * iTime / 10);
+        float timeSecondPass = iTime - timeFirstPass;
+        while (elapsedTime < timeFirstPass)
         {
             if (iToMove.start.z != iToMove.end.z)
             {
                 iToMove.transform.position = Vector3.Lerp(iToMove.start,
                                                                 iToMove.end,
-                                                                (elapsedTime / iTime));
+                                                                (elapsedTime / timeFirstPass));
             }
-            else if (iToMove.firstAxisIsX && isFirstPass || (!iToMove.firstAxisIsX && !isFirstPass))
+            else if (iToMove.firstAxisIsX)
             {
                 iToMove.transform.position = Vector3.Lerp(iToMove.start,
                                                                 new Vector3(iToMove.end.x, iToMove.start.y, iToMove.start.z),
-                                                                (elapsedTime / iTime));
+                                                                (elapsedTime / timeFirstPass));
             }
             else
             {
                 iToMove.transform.position = Vector3.Lerp(iToMove.start,
                                                                 new Vector3(iToMove.start.x, iToMove.end.y, iToMove.start.z),
-                                                                (elapsedTime / iTime));
+                                                                (elapsedTime / timeFirstPass));
             }
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
-
         }
+        iToMove = new Trajectory(iToMove.transform,
+                                    new Vector3(iToMove.transform.position.x, iToMove.transform.position.y, iToMove.transform.position.z),
+                                    iToMove.end,
+                                    iToMove.firstAxisIsX);
+        elapsedTime = 0;
+        while (elapsedTime < timeSecondPass)
+        {
+            if (iToMove.firstAxisIsX)
+            {
+                iToMove.transform.position = Vector3.Lerp(iToMove.start,
+                                                                new Vector3(iToMove.start.x, iToMove.end.y, iToMove.start.z),
+                                                                (elapsedTime / timeSecondPass));
+            }
+            else
+            {
+                iToMove.transform.position = Vector3.Lerp(iToMove.start,
+                                                                new Vector3(iToMove.end.x, iToMove.start.y, iToMove.start.z),
+                                                                (elapsedTime / timeSecondPass));
+            }
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
     }
 
     private IEnumerator LerpTrajectoryByAxis(List<Trajectory> iToMove, float iTime, bool isFirstPass)
@@ -292,7 +319,7 @@ public class GameManager : MonoBehaviour {
         floorTrajectories.AddRange(wallTrajectories);
         floorTrajectories.AddRange(spikeTrajectories);
 
-        yield return StartCoroutine(LerpTrajectory(floorTrajectories, 3));
+        yield return StartCoroutine(LerpTrajectory(floorTrajectories, 4.5f));
     }
 
     List<Trajectory> getTrajectories(List<Transform> start, List<Transform> end)
