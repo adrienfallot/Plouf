@@ -25,5 +25,5 @@ Material:
     m_Floats:
     - _FadeDistance: 49.26
     - _Far: 1
-    - _Near: 0.1
+    - _Near: 0.25
     m_Colors: []
