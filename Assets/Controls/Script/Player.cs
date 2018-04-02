@@ -797,6 +797,8 @@ public class Player : MonoBehaviour
             mesh.gameObject.SetActive(true);
         }
         m_Animator.SetBool("Death", false);
+        m_Quiver.Enqueue(true);
+        updateQuiver();
 
     }
 

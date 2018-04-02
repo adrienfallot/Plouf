@@ -162,6 +162,31 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
+    - target: {fileID: 96780088554235178, guid: 8d2f1416ad000eb4cb74f594ef71979b,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 96656473877431548, guid: 8d2f1416ad000eb4cb74f594ef71979b,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96398159300941906, guid: 8d2f1416ad000eb4cb74f594ef71979b,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 96423964335100532, guid: 8d2f1416ad000eb4cb74f594ef71979b,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96565846852016838, guid: 8d2f1416ad000eb4cb74f594ef71979b,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d2f1416ad000eb4cb74f594ef71979b, type: 2}
   m_IsPrefabParent: 0
@@ -573,6 +598,31 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
+    - target: {fileID: 96714867791181804, guid: 20d4ea054041ebc43b810dcae45f65fa,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 96611239974246216, guid: 20d4ea054041ebc43b810dcae45f65fa,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96981812515880742, guid: 20d4ea054041ebc43b810dcae45f65fa,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 96855719016486308, guid: 20d4ea054041ebc43b810dcae45f65fa,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96108314910470562, guid: 20d4ea054041ebc43b810dcae45f65fa,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 20d4ea054041ebc43b810dcae45f65fa, type: 2}
   m_IsPrefabParent: 0
@@ -1036,6 +1086,31 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
+    - target: {fileID: 96769730945250940, guid: bc7b5d4ede1930c44829ed5726782328,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 96185745539581010, guid: bc7b5d4ede1930c44829ed5726782328,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96504371154704270, guid: bc7b5d4ede1930c44829ed5726782328,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 96630292647940096, guid: bc7b5d4ede1930c44829ed5726782328,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96338745958788812, guid: bc7b5d4ede1930c44829ed5726782328,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc7b5d4ede1930c44829ed5726782328, type: 2}
   m_IsPrefabParent: 0
@@ -1299,6 +1374,31 @@ Prefab:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 1080026932}
+    - target: {fileID: 96375431598637686, guid: 28ba1d13f1943a64489825935c119b54,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 96559881439169262, guid: 28ba1d13f1943a64489825935c119b54,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96185384967767682, guid: 28ba1d13f1943a64489825935c119b54,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 96101488491595214, guid: 28ba1d13f1943a64489825935c119b54,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 96985194133549406, guid: 28ba1d13f1943a64489825935c119b54,
+        type: 2}
+      propertyPath: m_Time
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 28ba1d13f1943a64489825935c119b54, type: 2}
   m_IsPrefabParent: 0

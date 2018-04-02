@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour {
         m_mapGenerator.GenerateMap();
         m_mapGeneratorBack.RegenerateMap(1);
         m_mapGeneratorDeepBack.RegenerateMap(2);
-        InvokeRepeating("regenerateMap", 0, 10);
+        InvokeRepeating("regenerateMap", 10, 10);
     }
 
 	public Vector3 GetUnusedSpawn() {
