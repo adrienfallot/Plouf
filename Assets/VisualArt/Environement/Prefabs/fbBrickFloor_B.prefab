@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 65530382281591894}
   m_Layer: 8
   m_Name: fbBrickFloor_B
-  m_TagString: Untagged
+  m_TagString: Map_Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
