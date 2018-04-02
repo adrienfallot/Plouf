@@ -140,7 +140,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 56
   m_CollisionDetection: 0
 --- !u!82 &82991787577751776
 AudioSource:
@@ -236,6 +236,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   fallMultiplier: 0.68
   lowJumpMultiplier: 1
+  direction: {x: 0, y: 0, z: 0}
   arrowImpactSound:
   - {fileID: 8300000, guid: 4725fa0d8a6b92f42ae3659c2d538ba0, type: 3}
   - {fileID: 8300000, guid: ced9918b325ce52489c0fce1b742cd3b, type: 3}

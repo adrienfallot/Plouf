@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour {
         return blocksInFrontNotInBack;
     }
 
-    private IEnumerator LerpVelocityTo(List<Transform> iToMove, float iZOffset, float iTime)
+    private IEnumerator LerpPosition(List<Transform> iToMove, float iZOffset, float iTime)
     {
         float elapsedTime = 0;
         Vector3[] startPos = new Vector3[iToMove.Count];
@@ -136,13 +136,35 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    private void ActivateBumperOf(List<Transform> iBlocks)
+    {
+        foreach(Transform block in iBlocks)
+        {
+            block.GetChild(0).GetComponent<BoxCollider>().enabled = true;
+        }
+    }
+
+    private void DeactivateBumperOf(List<Transform> iBlocks)
+    {
+        foreach (Transform block in iBlocks)
+        {
+            block.GetChild(0).GetComponent<BoxCollider>().enabled = false;
+        }
+    }
+
     private IEnumerator ChangeMapCoroutine()
     {
         int[][] tmp = m_mapGenerator.cellValues;
         List<Transform> blocksToMove = getBlockInBackNotInFront();
         List<Transform> blocksToMoveToBack = getBlockInFrontNotInBack();
-        StartCoroutine(LerpVelocityTo(blocksToMoveToBack, 1, 2));
-        yield return StartCoroutine(LerpVelocityTo(blocksToMove, 0, 2));
+
+        ActivateBumperOf(blocksToMove);
+
+        StartCoroutine(LerpPosition(blocksToMoveToBack, 1, 2));
+        yield return StartCoroutine(LerpPosition(blocksToMove, 0, 2));
+
+        DeactivateBumperOf(blocksToMove);
+
         m_mapGenerator.cellValues = m_mapGeneratorBack.cellValues;
         foreach (Transform child in m_mapGenerator.transform)
         {

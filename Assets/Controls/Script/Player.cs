@@ -81,8 +81,26 @@ public class Player : MonoBehaviour
         UI.transform.GetChild(0).gameObject.GetComponent<TextMesh>().text = "x"+m_Quiver.Count;
     }
 
+    private void CheckForKickOnHead()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, -transform.up, out hit))
+        {
+            if(hit.distance < m_DistToGround + .01f)
+            {
+                if (hit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("player")))
+                {
+                    hit.collider.GetComponent<Player>().KillByDeathFromAbove(this);
+                }
+            }
+        }
+    }
+
     private void FixedUpdate()
     {
+
+        CheckForKickOnHead();
         m_IsCloseEnoughToWall = HasGripOnWall((m_FacingRight) ? transform.right : - transform.right);
         m_IsInAir = IsInAir();
 
@@ -335,21 +353,16 @@ public class Player : MonoBehaviour
     public void Dash(float iInputValue)
     {
         if (!m_IsBeingKickedOutOfMap && iInputValue != 0)
+        
         {
-            //if (!HasGripOnWall(m_Rigidbody.velocity))
+            if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0 && m_CanDashAgain)
             {
-                if (!m_IsDashing && m_availableDashs > 0 && iInputValue != 0 && m_CanDashAgain)
-                {
-                    source.PlayOneShot(dashSound[Random.Range(0, dashSound.Length)], 1.0f);
-                    StartCoroutine(DashCoroutine(iInputValue));
-                    StartCoroutine(DashCooldownCoroutine());
-                }
+                source.PlayOneShot(dashSound[Random.Range(0, dashSound.Length)], 1.0f);
+                StartCoroutine(DashCoroutine(iInputValue));
+                StartCoroutine(DashCooldownCoroutine());
             }
+            
             m_CanDashAgain = false;
-            /*else if (!m_IsGrippingWall)
-            {
-                StartCoroutine(GrippingWallCoroutine(Vector3.Normalize(m_Rigidbody.velocity)));
-            }*/
         }
         else
         {
@@ -430,7 +443,7 @@ public class Player : MonoBehaviour
         
         if(Physics.Raycast(transform.position, -transform.up, out hit))
         {
-            if(hit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
+            if(hit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")) || hit.collider.gameObject.layer.Equals("player"))
             {
                 if (hit.distance <= m_DistToGround + .01f)
                 {
@@ -438,7 +451,6 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        //Physics.Raycast(transform.position, -transform.up, m_DistToGround + .01f, LayerMask.NameToLayer("player"))
         return false;
     }
 
@@ -596,6 +608,7 @@ public class Player : MonoBehaviour
     {
         m_IsBeingKickedOutOfMap = true;
         UnlockZTranslation();
+        m_Rigidbody.drag = 0;
 
         while(m_IsBeingKickedOutOfMap)
         {
@@ -683,12 +696,6 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        /*if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("player")))
-        {
-            collision.gameObject.GetComponent<Player>().Bump();
-            source.PlayOneShot(punchSound[Random.Range(0, punchSound.Length)], 0.7f);
-            DeathFromAbove(collision.gameObject);
-        }*/
     }
 
     private void OnCollisionStay(Collision collision)
@@ -727,20 +734,6 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         //m_KeepInAir = false;
-    }
-    
-    private void DeathFromAbove(GameObject iFromPlayer)
-    {
-        Rigidbody rb = iFromPlayer.GetComponent<Rigidbody>();
-        if (Vector3.Dot((iFromPlayer.transform.position - transform.position).normalized, transform.up) >= .85f)
-        {
-            source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
-            Kill();
-            iFromPlayer.GetComponent<Player>().Score++;
-            foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
-                s.UpdateScore();
-            }
-        }
     }
 
     public void KillByDeathFromAbove(Player iFromPlayer)
