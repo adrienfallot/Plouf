@@ -426,7 +426,20 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, -transform.up, m_DistToGround + .01f);
+        RaycastHit hit;
+        
+        if(Physics.Raycast(transform.position, -transform.up, out hit))
+        {
+            if(hit.collider.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
+            {
+                if (hit.distance <= m_DistToGround + .01f)
+                {
+                    return true;
+                }
+            }
+        }
+        //Physics.Raycast(transform.position, -transform.up, m_DistToGround + .01f, LayerMask.NameToLayer("player"))
+        return false;
     }
 
     private bool HasGripOnWall(Vector3 iDirection)
@@ -606,9 +619,12 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.layer.Equals(LayerMask.NameToLayer("arena")))
         {
-            if(!m_IsBeingKickedOutOfMap)
+            if(other.CompareTag("ArenaBumper"))
             {
-                StartCoroutine(KickOutOfMap());
+                if (!m_IsBeingKickedOutOfMap)
+                {
+                    StartCoroutine(KickOutOfMap());
+                }
             }
         }
     }
@@ -667,12 +683,12 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("player")))
+        /*if (collision.gameObject.layer.Equals(LayerMask.NameToLayer("player")))
         {
             collision.gameObject.GetComponent<Player>().Bump();
             source.PlayOneShot(punchSound[Random.Range(0, punchSound.Length)], 0.7f);
             DeathFromAbove(collision.gameObject);
-        }
+        }*/
     }
 
     private void OnCollisionStay(Collision collision)
@@ -724,6 +740,19 @@ public class Player : MonoBehaviour
             foreach(Score s in Canvas.GetComponentsInChildren<Score>()){
                 s.UpdateScore();
             }
+        }
+    }
+
+    public void KillByDeathFromAbove(Player iFromPlayer)
+    {
+        iFromPlayer.Bump();
+        source.PlayOneShot(punchSound[Random.Range(0, punchSound.Length)], 0.7f);
+        source.PlayOneShot(deathFromAboveSound[Random.Range(0, deathFromAboveSound.Length)], 0.7f);
+        Kill();
+        iFromPlayer.Score++;
+        foreach (Score s in Canvas.GetComponentsInChildren<Score>())
+        {
+            s.UpdateScore();
         }
     }
 
